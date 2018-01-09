@@ -1,30 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minish.h                                           :+:      :+:    :+:   */
+/*   ft_strfchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/08 15:06:46 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/09 13:38:59 by pchadeni         ###   ########.fr       */
+/*   Created: 2018/01/09 11:39:56 by pchadeni          #+#    #+#             */
+/*   Updated: 2018/01/09 13:34:13 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISH_H
-# define MINISH_H
+#include "../minish.h"
 
-# define PROMPT "$> "
-# include "./libft/libft.h"
-
-typedef struct	s_line
+char	*ft_strfchr(char *str, char c)
 {
-	char			*var;
-	char			*value;
-	struct s_line	*next;
-}				t_line;
+	int		i;
 
-t_line			*init_file(void);
-t_line			*fill_line(char **env);
-void			line_pushback(t_line **first, t_line *add);
-
-#endif
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == c && str[i - 1])
+			return (ft_strsub(str, 0, i));
+		i++;
+	}
+	return (NULL);
+}

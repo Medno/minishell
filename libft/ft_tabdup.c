@@ -1,30 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minish.h                                           :+:      :+:    :+:   */
+/*   ft_tabdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/08 15:06:46 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/09 13:38:59 by pchadeni         ###   ########.fr       */
+/*   Created: 2018/01/09 16:36:57 by pchadeni          #+#    #+#             */
+/*   Updated: 2018/01/09 17:14:26 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISH_H
-# define MINISH_H
+#include "libft.h"
 
-# define PROMPT "$> "
-# include "./libft/libft.h"
-
-typedef struct	s_line
+char	**ft_tabdup(char **tab)
 {
-	char			*var;
-	char			*value;
-	struct s_line	*next;
-}				t_line;
+	char	**tmp;
+	int		size;
 
-t_line			*init_file(void);
-t_line			*fill_line(char **env);
-void			line_pushback(t_line **first, t_line *add);
-
-#endif
+	if (!tab)
+		return (NULL);
+	size = 0;
+	while (tab[size])
+		size++;
+	if (!(tmp = (char **)malloc(sizeof(char *) * size + 1)))
+		return (NULL);
+	tmp[size] = NULL;
+	size--;
+	while (size >= 0)
+	{
+		tmp[size] = ft_strdup(tab[size]);
+		size--;
+	}
+	return (tmp);
+}

@@ -1,30 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minish.h                                           :+:      :+:    :+:   */
+/*   ft_tabdel.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/08 15:06:46 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/09 13:38:59 by pchadeni         ###   ########.fr       */
+/*   Created: 2018/01/09 16:36:42 by pchadeni          #+#    #+#             */
+/*   Updated: 2018/01/09 17:14:59 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISH_H
-# define MINISH_H
+#include "libft.h"
 
-# define PROMPT "$> "
-# include "./libft/libft.h"
-
-typedef struct	s_line
+void	ft_tabdel(char **tab)
 {
-	char			*var;
-	char			*value;
-	struct s_line	*next;
-}				t_line;
+	int	i;
 
-t_line			*init_file(void);
-t_line			*fill_line(char **env);
-void			line_pushback(t_line **first, t_line *add);
-
-#endif
+	i = 0;
+	while (tab[i])
+	{
+		ft_strdel(&(tab[i]));
+		i++;
+	}
+	free(tab);
+	tab = NULL;
+}

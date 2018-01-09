@@ -6,13 +6,14 @@
 #    By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/08 14:57:58 by pchadeni          #+#    #+#              #
-#    Updated: 2018/01/08 15:40:18 by pchadeni         ###   ########.fr        #
+#    Updated: 2018/01/09 11:00:40 by pchadeni         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = gcc
 C_FLAGS = -Wall -Wextra -Werror
-SRC = main.c
+SRC = main.c \
+	  line.c
 LIB = ./libft/libft.a
 OBJ = $(addprefix $(OBJPATH)/, $(SRC:.c=.o))
 OBJPATH = obj

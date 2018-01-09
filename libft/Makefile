@@ -6,7 +6,7 @@
 #    By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 11:04:53 by pchadeni          #+#    #+#              #
-#    Updated: 2018/01/08 16:58:48 by pchadeni         ###   ########.fr        #
+#    Updated: 2018/01/09 16:49:43 by pchadeni         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ FILES = ft_atoi.c \
 		ft_isascii.c \
 		ft_isdigit.c \
 		ft_isprint.c \
-		ft_iswhitesp.c \
+		ft_iswsp.c \
 		ft_itoa.c \
 		ft_lstadd.c \
 		ft_lstaddlast.c \
@@ -42,6 +42,7 @@ FILES = ft_atoi.c \
 		ft_memdel.c \
 		ft_memmove.c \
 		ft_memset.c \
+		ft_nbwords.c \
 		ft_onejoinf.c \
 		ft_pow.c \
 		ft_putchar.c \
@@ -69,6 +70,7 @@ FILES = ft_atoi.c \
 		ft_striteri.c \
 		ft_strjoin.c \
 		ft_strjoinfree.c \
+		ft_strfchr.c \
 		ft_strlcat.c \
 		ft_strlchr.c \
 		ft_strlen.c \
@@ -81,11 +83,15 @@ FILES = ft_atoi.c \
 		ft_strnew.c \
 		ft_strnstr.c \
 		ft_strrchr.c \
+		ft_splitwsp.c \
 		ft_strsplit.c \
 		ft_strstr.c \
 		ft_strsub.c \
 		ft_strtrim.c \
 		ft_stolower.c \
+		ft_puttab.c \
+		ft_tabdel.c \
+		ft_tabdup.c \
 		ft_tolower.c \
 		ft_toupper.c \
 		get_next_line.c

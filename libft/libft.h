@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 11:10:25 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/08 16:57:09 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/09 16:49:18 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct	s_list
 }				t_list;
 
 char			**ft_strsplit(char const *s, char c);
+char			**ft_splitwsp(char *str);
 
 char			*ft_itoa(int n);
 char			*ft_onejoinf(char *news, char *old);
@@ -61,6 +62,7 @@ char			*ft_strncat(char *s1, const char *s2, size_t n);
 char			*ft_strchr(const char *s, int c);
 char			*ft_strrchr(const char *s, int c);
 char			*ft_strlchr(const char *s, int c);
+char			*ft_strfchr(char *str, char c);
 char			*ft_strcpy(char *dst, const char *src);
 char			*ft_strncpy(char *dst, const char *src, size_t len);
 char			*ft_strdup(const char *s1);
@@ -82,8 +84,8 @@ int				ft_isalpha(int c);
 int				ft_isascii(int c);
 int				ft_isdigit(int c);
 int				ft_isprint(int c);
-int				ft_iswhitesp(char c);
 int				ft_memcmp(const void *s1, const void *s2, size_t n);
+int				ft_nbwords(char *str);
 int				ft_pow(int n, int pow);
 int				ft_sqrt(int nb);
 int				ft_strcmp(const char *s1, const char *s2);
@@ -104,6 +106,7 @@ t_list			*ft_lstsplit(char const *s, char c);
 t_list			*ft_lsttail(t_list *lst);
 
 uint8_t			ft_expten(int n);
+uint8_t			ft_iswsp(char c);
 
 void			*ft_memalloc(size_t size);
 void			*ft_memchr(const void *s, int c, size_t n);
@@ -137,5 +140,9 @@ void			ft_strclr(char *s);
 void			ft_strdel(char **as);
 void			ft_striter(char *s, void (*f)(char *));
 void			ft_striteri(char *s, void (*f)(unsigned int, char *));
+
+char			**ft_tabdup(char **tab);
+void			ft_puttab(char **tab);
+void			ft_tabdel(char **tab);
 
 #endif
