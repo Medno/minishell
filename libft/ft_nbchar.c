@@ -1,48 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_splitwsp.c                                      :+:      :+:    :+:   */
+/*   ft_nbchar.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/09 15:37:07 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/10 17:27:46 by pchadeni         ###   ########.fr       */
+/*   Created: 2018/01/11 11:35:43 by pchadeni          #+#    #+#             */
+/*   Updated: 2018/01/11 11:37:11 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int		len_wsp(char *str)
+int	ft_nbchar(char *str, char c)
 {
 	int	i;
+	int	res;
 
 	i = 0;
-	while (str[i] && !ft_iswsp(str[i]))
-		i++;
-	return (i);
-}
-
-char			**ft_splitwsp(char *str)
-{
-	char	**tab;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	if (!(tab = (char **)malloc(sizeof(char *) * ft_nbwords(str) + 1)) || !len_wsp(str))
-		return (NULL);
+	res = 0;
 	while (str[i])
 	{
-		if (ft_iswsp(str[i]))
-			i++;
-		else
-		{
-			tab[j] = ft_strsub(str, i, len_wsp(str + i));
-			i += ft_strlen(tab[j]);
-			j++;
-		}
+		if (str[i] == c)
+			res++;
+		i++;
 	}
-	tab[j] = 0;
-	return (tab);
+	return (res);
 }

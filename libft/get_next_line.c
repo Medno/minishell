@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/30 13:03:44 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/08 16:59:17 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/10 11:27:08 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,9 +119,13 @@ int			get_next_line(int fd, char **line)
 		return (1);
 	readf = read_file(fd, line, &stat, empty);
 	if (readf == 1)
+	{
+		free(stat);
 		return (1);
+	}
 	if (readf == -1)
 		return (-1);
+	ft_putendl("FINI");
 	if (readf == 2 && (empty == 2 || **line))
 		return (1);
 	return (0);

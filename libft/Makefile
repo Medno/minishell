@@ -6,7 +6,7 @@
 #    By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 11:04:53 by pchadeni          #+#    #+#              #
-#    Updated: 2018/01/09 16:49:43 by pchadeni         ###   ########.fr        #
+#    Updated: 2018/01/11 16:00:40 by pchadeni         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,6 +42,7 @@ FILES = ft_atoi.c \
 		ft_memdel.c \
 		ft_memmove.c \
 		ft_memset.c \
+		ft_nbchar.c \
 		ft_nbwords.c \
 		ft_onejoinf.c \
 		ft_pow.c \
@@ -66,6 +67,7 @@ FILES = ft_atoi.c \
 		ft_strdel.c \
 		ft_strdup.c \
 		ft_strequ.c \
+		ft_strgap.c \
 		ft_striter.c \
 		ft_striteri.c \
 		ft_strjoin.c \
@@ -105,7 +107,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@ar rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
-	@echo "\033[01;32mLibft compiled √\033[22;0m"
+	@echo "\033[01;32mLibft compiled ✓\033[22;0m"
 
 %.o : %.c
 	@echo "\033[0;32m [OK] \033[0m       \033[0;33m Compiling:\033[0m" $<
@@ -113,10 +115,10 @@ $(NAME): $(OBJ)
 
 clean:
 	@rm -Rf $(OBJ)
-	@echo "\033[01;32mLibft clean √\033[22;0m"
+	@echo "\033[01;32mLibft clean ✓\033[22;0m"
 
 fclean: clean
 	@rm -Rf $(NAME)
-	@echo "\033[01;32mLibft fclean √\033[22;0m"
+	@echo "\033[01;32mLibft fclean ✓\033[22;0m"
 
 re: fclean all

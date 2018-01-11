@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 11:10:25 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/09 16:49:18 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/11 11:37:58 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ char			*ft_strfchr(char *str, char c);
 char			*ft_strcpy(char *dst, const char *src);
 char			*ft_strncpy(char *dst, const char *src, size_t len);
 char			*ft_strdup(const char *s1);
+char			*ft_strgap(char *str, char delim, int pos);
 char			*ft_strjoin(char const *s1, char const *s2);
 char			*ft_strjoinfree(char *s1, char *s2);
 char			*ft_strmap(char const *s, char (*f)(char));
@@ -85,6 +86,7 @@ int				ft_isascii(int c);
 int				ft_isdigit(int c);
 int				ft_isprint(int c);
 int				ft_memcmp(const void *s1, const void *s2, size_t n);
+int				ft_nbchar(char *str, char c);
 int				ft_nbwords(char *str);
 int				ft_pow(int n, int pow);
 int				ft_sqrt(int nb);

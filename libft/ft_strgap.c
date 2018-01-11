@@ -1,48 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_splitwsp.c                                      :+:      :+:    :+:   */
+/*   ft_strgap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/09 15:37:07 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/10 17:27:46 by pchadeni         ###   ########.fr       */
+/*   Created: 2018/01/11 10:18:08 by pchadeni          #+#    #+#             */
+/*   Updated: 2018/01/11 11:45:06 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int		len_wsp(char *str)
+char	*ft_strgap(char *str, char delim, int pos)
 {
-	int	i;
-
-	i = 0;
-	while (str[i] && !ft_iswsp(str[i]))
-		i++;
-	return (i);
-}
-
-char			**ft_splitwsp(char *str)
-{
-	char	**tab;
 	int		i;
 	int		j;
+	char	*s;
 
 	i = 0;
 	j = 0;
-	if (!(tab = (char **)malloc(sizeof(char *) * ft_nbwords(str) + 1)) || !len_wsp(str))
-		return (NULL);
-	while (str[i])
+	s = str;
+	while (s[i] && j < pos)
 	{
-		if (ft_iswsp(str[i]))
-			i++;
-		else
+		if (s[i] == delim)
 		{
-			tab[j] = ft_strsub(str, i, len_wsp(str + i));
-			i += ft_strlen(tab[j]);
 			j++;
+			if (j == pos)
+				return (ft_strsub(s, 0, i));
+			else
+			{
+				s += i + 1;
+				i = -1;
+			}
 		}
+		i++;
 	}
-	tab[j] = 0;
-	return (tab);
+	return ((pos - 1 == ft_nbchar(str, ':')) ? ft_strsub(s, 0, i) : NULL);
 }
