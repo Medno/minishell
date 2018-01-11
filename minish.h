@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 15:06:46 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/11 16:25:02 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/11 18:32:02 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ void			s_env(t_line **env, char **cmd);
 int				uns_env(t_line **env, char **cmd);
 
 int				p_cd(t_line **env, char **cmd);
+
+void			ft_echo(char **cmd);
 
 t_line			*init_line(void);
 t_line			*fill_line(char **env);

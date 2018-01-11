@@ -6,7 +6,7 @@
 #    By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/08 14:57:58 by pchadeni          #+#    #+#              #
-#    Updated: 2018/01/11 16:00:12 by pchadeni         ###   ########.fr        #
+#    Updated: 2018/01/11 18:32:34 by pchadeni         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,9 +22,10 @@ NAME = minishell
 #------All sources------#
 
 SRC = error.c \
+	  echo_new.c \
 	  env.c \
 	  main.c \
-	  new_cd.c \
+	  cd_new.c \
 	  line.c
 
 OBJ = $(SRC:.c=.o)

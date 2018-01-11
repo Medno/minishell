@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/09 10:58:26 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/11 09:02:54 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/11 17:25:33 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ char	**line_to_tab(t_line **first)
 	size_t	i;
 
 	tmp = *first;
-	if (!tmp)
+	if (!tmp || !*first)
 		return (NULL);
 	size = size_line(tmp);
 	if (!(res = (char **)malloc(sizeof(char *) * size_line(tmp) + 1)))

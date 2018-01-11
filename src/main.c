@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 14:58:40 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/11 16:40:12 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/11 18:35:43 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,30 +25,6 @@ uint8_t	is_built(char *str)
 	else if (ft_strcmp(str, "env") == 0)
 		return (1);
 	return (0);
-}
-
-void	p_echo(char *str)
-{
-	int	i;
-
-	i = 0;
-	ft_putstr(str);
-}
-
-void	ft_echo(char **cmd)
-{
-	int	i;
-	// A FINIR
-	i = 1;
-	while (cmd[i])
-	{
-		if (ft_strchr(cmd[i], '"'))
-			p_echo(cmd[i]);
-		else
-			ft_putstr(cmd[i]);
-		(cmd[i + 1]) ? ft_putchar(' ') : ft_putchar('\n');
-		i++;
-	}
 }
 
 void	exec_built(t_line **env, char **ncmd)
@@ -105,10 +81,11 @@ void	exec_bin(t_line **env, char **ncmd)
 		(path != NULL) ? check_bin(tenv, ncmd, path->value) : 0;
 		execve(ncmd[0], ncmd, tenv);
 		error("zsh", ncmd[0], 5);
-		ft_tabdel(tenv);
+		(tenv != NULL) ? ft_tabdel(tenv) : 0;
+		(ncmd != NULL) ? ft_tabdel(ncmd) : 0;
 		exit(0);
 	}
-	ft_tabdel(tenv);
+	(tenv != NULL) ? ft_tabdel(tenv) : 0;
 }
 
 uint8_t	execute_cmd(t_line **env, char *cmd)
@@ -140,14 +117,12 @@ int	main(int ac, char **av, char **env)
 {
 	char	*cmd;
 	uint8_t	again;
-	//	char	**nenv;
 	t_line	*nenv;
 
 	(void)ac;
 	(void)av;
 	again = 1;
 	nenv = fill_line(env);
-	//	nenv = ft_tabdup(env);
 	while (again)
 	{
 		ft_putstr(PROMPT);
@@ -158,7 +133,5 @@ int	main(int ac, char **av, char **env)
 	if (nenv)
 		del_line(&nenv);
 	//	while(1) ft_putchar('\0');
-	//	if (*nenv)
-	//		ft_tabdel(nenv);
 	return (0);
 }
