@@ -6,7 +6,7 @@
 #    By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/08 14:57:58 by pchadeni          #+#    #+#              #
-#    Updated: 2018/01/11 18:32:34 by pchadeni         ###   ########.fr        #
+#    Updated: 2018/01/15 17:18:52 by pchadeni         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,10 +23,18 @@ NAME = minishell
 
 SRC = error.c \
 	  echo_new.c \
+	  env_cmd.c \
 	  env.c \
 	  main.c \
 	  cd_new.c \
-	  line.c
+	  line.c \
+	  line_2.c
+
+#------Library------#
+
+LIB = ./libft/libft.a
+
+############ Do not edit ############
 
 OBJ = $(SRC:.c=.o)
 
@@ -36,10 +44,6 @@ SRCPATH = src
 OPATH = obj
 
 OBJP = $(addprefix $(OPATH)/, $(SRC:.c=.o))
-
-#------Library------#
-
-LIB = ./libft/libft.a
 
 #------Define colors------#
 
@@ -53,13 +57,6 @@ END_COL = \033[0m
 all: $(LIB) $(OPATH) $(NAME)
 
 re: fclean all
-
-#------Compilation of Libft------#
-
-$(LIB) : 
-	@$(MAKE) -C libft/ MAKEFLAGS=
-
-####### Do not edit, main rules #######
 
 $(OPATH)/%.o: $(SRCPATH)/%.c
 	@$(CC) $(C_FLAGS) -o $@ -c $^
@@ -81,3 +78,8 @@ fclean: clean
 	@$(MAKE) fclean -C libft/
 	@rm -Rf $(NAME)
 	@echo "$(BOLD_GREEN)$(NAME) fclean ✓$(END_COL)"
+
+#------Compilation of Libft------#
+
+$(LIB) : 
+	@$(MAKE) -C libft/ MAKEFLAGS=

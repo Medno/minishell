@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 09:00:26 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/11 16:46:39 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/15 17:06:34 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,23 +35,28 @@ void	s_env(t_line **env, char **cmd)
 {
 	t_line	*add;
 	t_line	*tmp;
+	char	*copy;
 
 	tmp = *env;
 	if (!cmd[1] || !cmd[2])
-		return;
+		return ;
+	copy = (ft_strchr(cmd[2], '"')) ?
+		ft_strsub(cmd[2], 1, ft_strlen(cmd[2]) - 2) : ft_strdup(cmd[2]);
 	while (tmp)
 	{
 		if (ft_strcmp(tmp->var, cmd[1]) == 0)
 		{
 			ft_strdel(&(tmp->value));
-			tmp->value = ft_strdup(cmd[2]);
+			tmp->value = ft_strdup(copy);
+			ft_strdel(&copy);
 			return ;
 		}
 		tmp = tmp->next;
 	}
 	add = init_line();
 	add->var = ft_strdup(cmd[1]);
-	add->value = ft_strdup(cmd[2]);
+	add->value = ft_strdup(copy);
+	ft_strdel(&copy);
 	line_pushback(env, add);
 }
 

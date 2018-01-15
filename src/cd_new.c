@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 18:31:11 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/11 18:31:13 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/15 17:37:52 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ t_line	*get_pwd(t_line *env, char *str)
 	t_line *pwd;
 
 	pwd = env;
-	while (pwd->next)
+	while (pwd && pwd->next)
 	{
 		if (ft_strcmp(pwd->var, str) == 0)
 			return (pwd);
@@ -53,7 +53,7 @@ t_line	*get_home(t_line *env)
 	return (NULL);
 }
 
-void	go_home(t_line **env, char **cmd, t_line *pwd,  t_line *oldpwd)
+void	go_home(t_line **env, char **cmd, t_line *pwd, t_line *oldpwd)
 {
 	ft_strdel(&(oldpwd->value));
 	oldpwd->value = ft_strdup(pwd->value);
@@ -63,7 +63,7 @@ void	go_home(t_line **env, char **cmd, t_line *pwd,  t_line *oldpwd)
 		chdir((get_home(*env))->value);
 }
 
-int	check_fold(char **cmd, t_line *pwd, t_line *oldpwd)
+int		check_fold(char **cmd, t_line *pwd, t_line *oldpwd)
 {
 	t_stat	sb;
 	int		minus;
@@ -88,7 +88,7 @@ int	check_fold(char **cmd, t_line *pwd, t_line *oldpwd)
 	return (error("cd", cmd[1], 3));
 }
 
-int	p_cd(t_line **env, char **cmd)
+int		p_cd(t_line **env, char **cmd)
 {
 	t_line	*pwd;
 	t_line	*oldpwd;
@@ -100,11 +100,10 @@ int	p_cd(t_line **env, char **cmd)
 	if ((!cmd[1] || cmd[1][0] == '~') && get_home(*env))
 		go_home(env, cmd, pwd, oldpwd);
 	else if (cmd[1])
-	{
 		if (check_fold(cmd, pwd, oldpwd) == 0)
 			return (0);
-	}
 	ft_strdel(&(pwd->value));
 	pwd->value = getcwd(pwd->value, 0);
+	ft_putendl(pwd->value);
 	return (1);
 }

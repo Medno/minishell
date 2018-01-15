@@ -6,7 +6,7 @@
 #    By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 11:04:53 by pchadeni          #+#    #+#              #
-#    Updated: 2018/01/11 16:00:40 by pchadeni         ###   ########.fr        #
+#    Updated: 2018/01/15 11:49:20 by pchadeni         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ FILES = ft_atoi.c \
 		ft_bzero.c \
 		ft_expten.c \
 		ft_foreachint.c \
+		ft_getopt.c \
 		ft_isalnum.c \
 		ft_isalpha.c \
 		ft_isascii.c \

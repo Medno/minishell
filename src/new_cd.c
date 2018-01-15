@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 09:07:51 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/11 16:52:56 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/11 17:48:11 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	go_home(t_line **env, char **cmd, t_line *pwd,  t_line *oldpwd)
 {
 	ft_strdel(&(oldpwd->value));
 	oldpwd->value = ft_strdup(pwd->value);
-	if (cmd[1][0] == '~' && cmd[1][1])
+	if (cmd[1] && cmd[1][0] == '~' && cmd[1][1])
 		chdir(ft_strjoin(((get_home(*env))->value), &cmd[1][1]));
 	else
 		chdir((get_home(*env))->value);

@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 11:10:25 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/11 11:37:58 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/15 13:06:37 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct	s_list
 char			**ft_strsplit(char const *s, char c);
 char			**ft_splitwsp(char *str);
 
+char			*ft_getopt(char **cmd, int *i);
 char			*ft_itoa(int n);
 char			*ft_onejoinf(char *news, char *old);
 char			*ft_strcat(char *s1, const char *s2);

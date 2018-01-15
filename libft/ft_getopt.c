@@ -1,49 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_splitwsp.c                                      :+:      :+:    :+:   */
+/*   ft_getopt.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/09 15:37:07 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/15 17:04:02 by pchadeni         ###   ########.fr       */
+/*   Created: 2018/01/15 11:42:52 by pchadeni          #+#    #+#             */
+/*   Updated: 2018/01/15 16:27:07 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int		len_wsp(char *str)
+char	*ft_getopt(char **cmd, int *i)
 {
-	int	i;
+	char	*param;
 
-	i = 0;
-	while (str[i] && !ft_iswsp(str[i]))
-		i++;
-	return (i);
-}
-
-char			**ft_splitwsp(char *str)
-{
-	char	**tab;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	if (!(tab = (char **)malloc(sizeof(char *) * ft_nbwords(str) + 1)) ||
-			!len_wsp(str))
+	if (!(param = ft_strdup("")))
 		return (NULL);
-	while (str[i])
+	while (cmd[*i] && cmd[*i][0] == '-' && ft_strlen(cmd[*i]) != 1)
 	{
-		if (ft_iswsp(str[i]))
-			i++;
-		else
-		{
-			tab[j] = ft_strsub(str, i, len_wsp(str + i));
-			i += ft_strlen(tab[j]);
-			j++;
-		}
+		param = ft_onejoinf(param, &cmd[*i][1]);
+		(*i)++;
+		if (cmd[*i] && ft_strcmp(cmd[*i], "--") == 0)
+			if ((*i)++)
+				break ;
 	}
-	tab[j] = 0;
-	return (tab);
+	if (param[0] == '\0')
+		ft_strdel(&param);
+	return (param);
 }

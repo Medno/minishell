@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 14:58:40 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/11 18:35:43 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/15 17:28:10 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,21 @@ uint8_t	is_built(char *str)
 
 void	exec_built(t_line **env, char **ncmd)
 {
-	(ft_strcmp(ncmd[0], "echo") == 0) ? ft_echo(ncmd) : 0;
+	(ft_strcmp(ncmd[0], "echo") == 0) ? ft_echo(*env, ncmd) : 0;
 	(ft_strcmp(ncmd[0], "cd") == 0) ? p_cd(env, ncmd) : 0;
 	(ft_strcmp(ncmd[0], "setenv") == 0) ? s_env(env, ncmd) : 0;
 	(ft_strcmp(ncmd[0], "unsetenv") == 0) ? uns_env(env, ncmd) : 0;
-	(ft_strcmp(ncmd[0], "env") == 0) ? p_line(*env) : 0;
+	(ft_strcmp(ncmd[0], "env") == 0) ? n_env(*env, ncmd) : 0;
 }
 
-t_line	*get_path(t_line *env)
+t_line	*get_smtg(t_line *env, char *str)
 {
 	t_line	*path;
 
 	path = env;
 	while (path)
 	{
-		if (ft_strcmp(path->var, "PATH") == 0)
+		if (ft_strcmp(path->var, str) == 0)
 			return (path);
 		path = path->next;
 	}
@@ -71,7 +71,7 @@ void	exec_bin(t_line **env, char **ncmd)
 	t_line	*path;
 	pid_t	fath;
 
-	path = get_path(*env);
+	path = get_smtg(*env, "PATH");
 	fath = fork();
 	tenv = line_to_tab(env);
 	if (fath > 0)
@@ -97,7 +97,9 @@ uint8_t	execute_cmd(t_line **env, char *cmd)
 	if (!*cmd)
 		return (1);
 	res = 1;
-	if ((ncmd = ft_splitwsp(cmd)) == NULL)
+	while (ft_iswsp(*cmd))
+		cmd++;
+	if (!*cmd || ((ncmd = ft_splitwsp(cmd)) == NULL))
 		return (1);
 	if (ncmd && ft_strcmp(ncmd[0], "exit") != 0)
 	{

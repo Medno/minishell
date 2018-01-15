@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/09 10:58:26 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/11 17:25:33 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/15 17:18:30 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,45 +80,19 @@ char	**line_to_tab(t_line **first)
 	return (res);
 }
 
-void	p_line(t_line *line)
+void	p_line(t_line *line, uint8_t i, char *del)
 {
 	t_line	*tmp;
 
 	tmp = line;
 	while (tmp)
 	{
-		ft_putstr(tmp->var);
-		ft_putchar('=');
-		ft_putendl(tmp->value);
+		if (i == 0 || (i == 1 && ft_strcmp(del, tmp->var) != 0))
+		{
+			ft_putstr(tmp->var);
+			ft_putchar('=');
+			ft_putendl(tmp->value);
+		}
 		tmp = tmp->next;
-	}
-}
-
-int		clean_line(t_line **prev, t_line *tmp)
-{
-	(*prev) = tmp->next;
-	ft_strdel(&(tmp->var));
-	ft_strdel(&(tmp->value));
-	free(tmp);
-	tmp = NULL;
-	return (1);
-}
-
-void	del_line(t_line **first)
-{
-	if ((*first)->next == NULL)
-	{
-		ft_strdel(&(*first)->var);
-		ft_strdel(&(*first)->value);
-		free(*first);
-		*first = NULL;
-	}
-	else
-	{
-		del_line(&(*first)->next);
-		ft_strdel(&(*first)->var);
-		ft_strdel(&(*first)->value);
-		free(*first);
-		*first = NULL;
 	}
 }
