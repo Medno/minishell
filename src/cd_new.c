@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 18:31:11 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/15 17:37:52 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/16 18:21:07 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,47 +63,65 @@ void	go_home(t_line **env, char **cmd, t_line *pwd, t_line *oldpwd)
 		chdir((get_home(*env))->value);
 }
 
-int		check_fold(char **cmd, t_line *pwd, t_line *oldpwd)
+void	move_dir(char *cmd, t_stat sb, char *p)
+{
+	char	str[10000];
+
+	if (p && ft_strchr(p, 'P') && (sb.st_mode & S_IFMT) == S_IFLNK)
+	{
+		ft_bzero(str, sizeof(str));
+		readlink(cmd, str, 10000);
+		chdir(str);
+	}
+	else
+		chdir(cmd);
+}
+
+int		check_fold(char *cmd, t_line *pwd, t_line *oldpwd, char *p)
 {
 	t_stat	sb;
 	int		minus;
 
-	minus = (ft_strchr(cmd[1], '-') != NULL) ? 1 : 0;
-	if (access(cmd[1], F_OK) == 0 || minus)
+	minus = (ft_strcmp(cmd, "-") == 0) ? 1 : 0;
+	if (access(cmd, F_OK) == 0 || minus)
 	{
-		stat(cmd[1], &sb);
+		stat(cmd, &sb);
 		if ((sb.st_mode & S_IFMT) == S_IFDIR || minus)
 		{
-			if (access(cmd[1], R_OK) == 0 || minus)
+			if (access(cmd, R_OK) == 0 || minus)
 			{
-				(minus == 0) ? chdir(cmd[1]) : chdir(oldpwd->value);
+				(minus == 0) ? move_dir(cmd, sb, p) : chdir(oldpwd->value);
 				ft_strdel(&(oldpwd->value));
 				oldpwd->value = ft_strdup(pwd->value);
 				return (1);
 			}
-			return (error("cd", cmd[1], 2));
+			return (error("cd", cmd, 2));
 		}
-		return (error("cd", cmd[1], 6));
+		return (error("cd", cmd, 6));
 	}
-	return (error("cd", cmd[1], 3));
+	return (error("cd", cmd, 3));
 }
 
 int		p_cd(t_line **env, char **cmd)
 {
 	t_line	*pwd;
 	t_line	*oldpwd;
+	char	*p;
+	int		i;
 
 	pwd = get_pwd(*env, "PWD");
 	oldpwd = get_pwd(*env, "OLDPWD");
-	if (cmd[1] && cmd[2])
-		return (error("cd", cmd[1], 1));
-	if ((!cmd[1] || cmd[1][0] == '~') && get_home(*env))
+	i = 1;
+	p = ft_getopt(cmd, &i);
+	(ft_checkopt(p, "LP", 2) || !ft_strcmp(cmd[i], "-") || !(i - 1)) ? 0 : i--;
+	if (cmd[i] && cmd[i + 1])
+		return (error("cd", cmd[i], 1));
+	if ((!cmd[i] || cmd[i][0] == '~') && get_home(*env))
 		go_home(env, cmd, pwd, oldpwd);
-	else if (cmd[1])
-		if (check_fold(cmd, pwd, oldpwd) == 0)
+	else if (cmd[i])
+		if (check_fold(cmd[i], pwd, oldpwd, p) == 0)
 			return (0);
 	ft_strdel(&(pwd->value));
 	pwd->value = getcwd(pwd->value, 0);
-	ft_putendl(pwd->value);
 	return (1);
 }

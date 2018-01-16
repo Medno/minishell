@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 14:58:40 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/15 17:28:10 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/16 17:18:53 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,7 @@ uint8_t	execute_cmd(t_line **env, char *cmd)
 	if (ncmd && ft_strcmp(ncmd[0], "exit") != 0)
 	{
 		built = is_built(ncmd[0]);
-		if (built > 0)
-			exec_built(env, ncmd);
-		else
-			exec_bin(env, ncmd);
+		(built > 0) ? exec_built(env, ncmd) : exec_bin(env, ncmd);
 	}
 	else
 		res = 0;
@@ -115,9 +112,33 @@ uint8_t	execute_cmd(t_line **env, char *cmd)
 	return (res);
 }
 
-int	main(int ac, char **av, char **env)
+int	exec(t_line *env, uint8_t again)
 {
 	char	*cmd;
+	int		i;
+	char	**semicolon;
+	char	*tmp;
+
+	i = 0;
+	tmp = NULL;
+	tmp = getcwd(tmp, 0);
+	ft_putcolor(tmp, LIGHT_BLUE);
+	ft_putstr(PROMPT);
+	get_next_line(0, &cmd);
+	semicolon = ft_strsplit(cmd, ';');
+	while (semicolon[i])
+	{
+		again = execute_cmd(&env, semicolon[i]);
+		i++;
+	}
+	ft_tabdel(semicolon);
+	ft_strdel(&cmd);
+	ft_strdel(&tmp);
+	return (again);
+}
+
+int	main(int ac, char **av, char **env)
+{
 	uint8_t	again;
 	t_line	*nenv;
 
@@ -126,14 +147,8 @@ int	main(int ac, char **av, char **env)
 	again = 1;
 	nenv = fill_line(env);
 	while (again)
-	{
-		ft_putstr(PROMPT);
-		get_next_line(0, &cmd);
-		again = execute_cmd(&nenv, cmd);
-		ft_strdel(&cmd);
-	}
-	if (nenv)
-		del_line(&nenv);
+		again = exec(nenv, again);
+	del_line(&nenv);
 	//	while(1) ft_putchar('\0');
 	return (0);
 }

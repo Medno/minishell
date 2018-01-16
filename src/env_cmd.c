@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/15 13:54:05 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/15 17:22:42 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/16 18:17:51 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,15 @@ void	env_null(t_line *env, char **cmd, int i)
 void	n_env(t_line *env, char **cmd)
 {
 	char	*p;
-	char	valid[2];
 	int		i;
+	int		opt;
 
 	i = 1;
-	ft_strcpy(valid, "iu");
 	p = ft_getopt(cmd, &i);
-	if (!p)
+	opt = ft_checkopt(p, "iu", 2);
+	if (!p && opt == 0)
 		p_line(env, 0, NULL);
-	else
+	else if (opt == 0)
 	{
 		if (ft_strchr(p, 'i') && cmd[i])
 			env_null(env, cmd, i);
@@ -53,4 +53,7 @@ void	n_env(t_line *env, char **cmd)
 			p_line(env, 1, cmd[i]);
 		ft_strdel(&p);
 	}
+	else
+		usage("env", "iu", opt, 1);
+	ft_strdel(&p);
 }

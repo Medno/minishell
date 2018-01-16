@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 15:06:46 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/15 17:27:50 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/16 17:58:25 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ char			**line_to_tab(t_line **first);
 void			p_line(t_line *line, uint8_t i, char *del);
 int				clean_line(t_line **prev, t_line *tmp);
 void			del_line(t_line **first);
+
 int				error(char *built, char *cmd, int code);
+int				usage(char *name, char *opt, char err, int e);
 
 #endif

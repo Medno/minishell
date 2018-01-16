@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 11:10:25 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/15 13:06:37 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/16 17:32:32 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ char			*ft_stolower(char *str);
 
 int				ft_atoi(const char *str);
 int				ft_abs(int n);
+int				ft_checkopt(char *p, char *str, int nb_opt);
 int				ft_isalnum(int c);
 int				ft_isalpha(int c);
 int				ft_isascii(int c);

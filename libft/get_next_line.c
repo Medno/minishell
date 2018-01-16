@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/30 13:03:44 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/10 11:27:08 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/16 15:40:17 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,6 @@ int			get_next_line(int fd, char **line)
 	}
 	if (readf == -1)
 		return (-1);
-	ft_putendl("FINI");
 	if (readf == 2 && (empty == 2 || **line))
 		return (1);
 	return (0);

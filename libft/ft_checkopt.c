@@ -1,30 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_tabdel.c                                        :+:      :+:    :+:   */
+/*   ft_checkopt.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/09 16:36:42 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/16 16:39:21 by pchadeni         ###   ########.fr       */
+/*   Created: 2018/01/16 17:26:40 by pchadeni          #+#    #+#             */
+/*   Updated: 2018/01/16 18:03:15 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_tabdel(char **tab)
+int	ft_checkopt(char *p, char *str, int nb_opt)
 {
-	int	i;
+	char	valid[nb_opt];
+	int		i;
 
 	i = 0;
-	if (tab)
+	if (p)
 	{
-		while (tab[i])
+		ft_strcpy(valid, str);
+		while (p[i])
 		{
-			ft_strdel(&(tab[i]));
+			if (!ft_strchr(valid, p[i]))
+				return (p[i]);
 			i++;
 		}
-		free(tab);
-		tab = NULL;
+		return (0);
 	}
+	return (0);
 }
