@@ -24,19 +24,22 @@ int		clean_line(t_line **prev, t_line *tmp)
 
 void	del_line(t_line **first)
 {
-	if ((*first)->next == NULL)
+	if (*first)
 	{
-		ft_strdel(&(*first)->var);
-		ft_strdel(&(*first)->value);
-		free(*first);
-		*first = NULL;
-	}
-	else
-	{
-		del_line(&(*first)->next);
-		ft_strdel(&(*first)->var);
-		ft_strdel(&(*first)->value);
-		free(*first);
-		*first = NULL;
+		if ((*first)->next == NULL)
+		{
+			ft_strdel(&(*first)->var);
+			ft_strdel(&(*first)->value);
+			free(*first);
+			*first = NULL;
+		}
+		else
+		{
+			del_line(&(*first)->next);
+			ft_strdel(&(*first)->var);
+			ft_strdel(&(*first)->value);
+			free(*first);
+			*first = NULL;
+		}
 	}
 }

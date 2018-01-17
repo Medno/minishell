@@ -16,6 +16,7 @@
 # define PROMPT "$> "
 # include "./libft/libft.h"
 # include <sys/stat.h>
+# include <signal.h>
 
 typedef struct stat	t_stat;
 

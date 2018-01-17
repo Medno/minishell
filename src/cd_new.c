@@ -12,20 +12,24 @@
 
 #include "../minish.h"
 
-t_line	*get_pwd(t_line *env, char *str)
+t_line	*get_pwd(t_line **env, char *str)
 {
 	t_line *pwd;
 
-	pwd = env;
-	while (pwd && pwd->next)
+	if (*env)
 	{
-		if (ft_strcmp(pwd->var, str) == 0)
-			return (pwd);
-		pwd = pwd->next;
+		pwd = *env;
+		while (pwd && pwd->next)
+		{
+			if (ft_strcmp(pwd->var, str) == 0)
+				return (pwd);
+			pwd = pwd->next;
+		}
 	}
 	pwd = init_line();
 	pwd->var = ft_strdup(str);
 	pwd->value = getcwd(pwd->value, 0);
+	line_pushback(env, pwd);
 	return (pwd);
 }
 
@@ -64,19 +68,19 @@ void	go_home(t_line **env, char **cmd, t_line *pwd, t_line *oldpwd)
 
 void	move_dir(char *cmd, t_stat sb, char *p)
 {
-//	char	str[10000];
-(void)p;
-(void)sb;
-/*
-	if (p && ft_strchr(p, 'P') && (sb.st_mode & S_IFMT) == S_IFLNK)
-	{
-		ft_bzero(str, sizeof(str));
-		readlink(cmd, str, 10000);
-		chdir(ft_strjoin("/", str));
-	}
-	else
-	*/
-		chdir(cmd);
+	//	char	str[10000];
+	(void)p;
+	(void)sb;
+	/*
+	   if (p && ft_strchr(p, 'P') && (sb.st_mode & S_IFMT) == S_IFLNK)
+	   {
+	   ft_bzero(str, sizeof(str));
+	   readlink(cmd, str, 10000);
+	   chdir(ft_strjoin("/", str));
+	   }
+	   else
+	   */
+	chdir(cmd);
 }
 
 int		check_fold(char *cmd, t_line *pwd, t_line *oldpwd, char *p)
@@ -111,10 +115,8 @@ int		p_cd(t_line **env, char **cmd)
 	char	*p;
 	int		i;
 
-	pwd = get_pwd(*env, "PWD");
-	line_pushback(env, pwd);
-	oldpwd = get_pwd(*env, "OLDPWD");
-	line_pushback(env, oldpwd);
+	pwd = get_pwd(env, "PWD");
+	oldpwd = get_pwd(env, "OLDPWD");
 	i = 1;
 	p = ft_getopt(cmd, &i);
 	(!ft_checkopt(p, "LP", 2) || !ft_strcmp(cmd[i], "-") || !(i - 1)) ? 0 : i--;
@@ -126,7 +128,7 @@ int		p_cd(t_line **env, char **cmd)
 		if (check_fold(cmd[i], pwd, oldpwd, p) == 0)
 			return (0);
 	ft_strdel(&(pwd->value));
-//	pwd->value = (p && ft_strchr(p, 'P')) ? ft_strrchr(getcwd(pwd->value, 0), '/'): getcwd(pwd->value, 0);
+	//	pwd->value = (p && ft_strchr(p, 'P')) ? ft_strrchr(getcwd(pwd->value, 0), '/'): getcwd(pwd->value, 0);
 	pwd->value = getcwd(pwd->value, 0);
 	ft_strdel(&p);
 	return (1);

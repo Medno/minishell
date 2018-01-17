@@ -146,7 +146,7 @@ void	prompt(int sig)
 	}
 }
 
-int	exec(t_line *env, uint8_t again)
+int	exec(t_line **env, uint8_t again)
 {
 	char	*cmd;
 	int		i;
@@ -159,7 +159,7 @@ int	exec(t_line *env, uint8_t again)
 	semicolon = ft_strsplit(cmd, ';');
 	while (semicolon[i])
 	{
-		again = execute_cmd(&env, semicolon[i]);
+		again = execute_cmd(env, semicolon[i]);
 		i++;
 	}
 	ft_tabdel(semicolon);
@@ -177,7 +177,7 @@ int	main(int ac, char **av, char **env)
 	again = 1;
 	nenv = fill_line(env);
 	while (again)
-		again = exec(nenv, again);
+		again = exec(&nenv, again);
 	del_line(&nenv);
 	//	while(1) ft_putchar('\0');
 	return (0);

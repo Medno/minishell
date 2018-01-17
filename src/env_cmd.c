@@ -43,8 +43,8 @@ void	n_env(t_line *env, char **cmd)
 	i = 1;
 	p = ft_getopt(cmd, &i);
 	opt = ft_checkopt(p, "iu", 2);
-	if (!p && opt == 0)
-		p_line(env, 0, NULL);
+	if (!p || opt == 0)
+		p_line(env, 0, "");
 	else if (opt == 0)
 	{
 		if (ft_strchr(p, 'i') && cmd[i])
