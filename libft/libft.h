@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 11:10:25 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/16 17:32:32 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/17 15:53:52 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+# define BOLD "\033[1m"
 # define BLACK "\033[22;30m"
 # define RED "\033[22;31m"
 # define GREEN "\033[22;32m"

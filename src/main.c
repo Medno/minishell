@@ -6,11 +6,13 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 14:58:40 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/16 17:18:53 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/17 18:24:53 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minish.h"
+
+pid_t	fath = -1;
 
 uint8_t	is_built(char *str)
 {
@@ -65,17 +67,26 @@ void	check_bin(char **tenv, char **ncmd, char *path)
 	}
 }
 
+void kill_child(int sig)
+{
+	sig = 0;
+	(void)sig;
+	if (fath > 0)
+		kill(fath, SIGTERM);
+	fath = -1;
+	ft_putchar('\n');
+	signal(SIGINT ,(void (*)(int))kill_child);
+}
+
 void	exec_bin(t_line **env, char **ncmd)
 {
 	char	**tenv;
 	t_line	*path;
-	pid_t	fath;
 
 	path = get_smtg(*env, "PATH");
 	fath = fork();
 	tenv = line_to_tab(env);
-	if (fath > 0)
-		wait(NULL);
+	signal(SIGINT ,(void (*)(int))kill_child);
 	if (fath == 0)
 	{
 		(path != NULL) ? check_bin(tenv, ncmd, path->value) : 0;
@@ -85,6 +96,8 @@ void	exec_bin(t_line **env, char **ncmd)
 		(ncmd != NULL) ? ft_tabdel(ncmd) : 0;
 		exit(0);
 	}
+	if (fath > 0)
+		wait(&fath);
 	(tenv != NULL) ? ft_tabdel(tenv) : 0;
 }
 
@@ -112,18 +125,36 @@ uint8_t	execute_cmd(t_line **env, char *cmd)
 	return (res);
 }
 
+void	p_prompt(void)
+{
+	char	*tmp;
+	
+	tmp = NULL;
+	tmp = getcwd(tmp, 0);
+	ft_putcolor(tmp, LIGHT_BLUE);
+	ft_putstr(PROMPT);
+	ft_strdel(&tmp);
+}
+
+void	prompt(int sig)
+{
+	if (sig == SIGINT)
+	{
+		ft_putchar('\n');
+		p_prompt();
+		signal(SIGINT, (void (*)(int))prompt);
+	}
+}
+
 int	exec(t_line *env, uint8_t again)
 {
 	char	*cmd;
 	int		i;
 	char	**semicolon;
-	char	*tmp;
 
 	i = 0;
-	tmp = NULL;
-	tmp = getcwd(tmp, 0);
-	ft_putcolor(tmp, LIGHT_BLUE);
-	ft_putstr(PROMPT);
+	p_prompt();
+	signal(SIGINT ,(void (*)(int))prompt);
 	get_next_line(0, &cmd);
 	semicolon = ft_strsplit(cmd, ';');
 	while (semicolon[i])
@@ -133,7 +164,6 @@ int	exec(t_line *env, uint8_t again)
 	}
 	ft_tabdel(semicolon);
 	ft_strdel(&cmd);
-	ft_strdel(&tmp);
 	return (again);
 }
 
