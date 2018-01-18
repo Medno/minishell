@@ -1,22 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putendl.c                                       :+:      :+:    :+:   */
+/*   ft_lastchar.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/09 15:59:34 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/18 17:55:32 by pchadeni         ###   ########.fr       */
+/*   Created: 2018/01/18 15:05:25 by pchadeni          #+#    #+#             */
+/*   Updated: 2018/01/18 17:05:30 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_putendl(char const *s)
+char	ft_lastchar(char *str)
 {
-	if (s)
+	int	i;
+
+	i = 0;
+	if (str)
 	{
-		ft_putstr(s);
-		ft_putchar('\n');
+		while (str[i + 1])
+			i++;
+		return (str[i]);
 	}
+	return (0);
 }

@@ -6,7 +6,7 @@
 #    By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 11:04:53 by pchadeni          #+#    #+#              #
-#    Updated: 2018/01/16 17:31:59 by pchadeni         ###   ########.fr        #
+#    Updated: 2018/01/18 16:34:29 by pchadeni         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,8 +24,9 @@ FILES = ft_atoi.c \
 		ft_isascii.c \
 		ft_isdigit.c \
 		ft_isprint.c \
-		ft_iswsp.c \
+		ft_isx.c \
 		ft_itoa.c \
+		ft_lastchar.c \
 		ft_lstadd.c \
 		ft_lstaddlast.c \
 		ft_lstclean.c \
@@ -70,6 +71,7 @@ FILES = ft_atoi.c \
 		ft_strdup.c \
 		ft_strequ.c \
 		ft_strgap.c \
+		ft_strlgap.c \
 		ft_striter.c \
 		ft_striteri.c \
 		ft_strjoin.c \

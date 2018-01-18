@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 11:10:25 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/17 15:53:52 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/18 17:06:25 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <sys/types.h>
 # include <sys/uio.h>
+# include <sys/stat.h>
 # include <stdint.h>
 # include <stdlib.h>
 # include <string.h>
@@ -46,6 +47,8 @@
 # define BG_GRAY "\033[47m"
 # define BUFF_SIZE 10000
 
+typedef struct stat	t_stat;
+
 typedef struct	s_list
 {
 	void			*content;
@@ -69,6 +72,7 @@ char			*ft_strcpy(char *dst, const char *src);
 char			*ft_strncpy(char *dst, const char *src, size_t len);
 char			*ft_strdup(const char *s1);
 char			*ft_strgap(char *str, char delim, int pos);
+char			*ft_strlgap(char *str, char delim, int pos);
 char			*ft_strjoin(char const *s1, char const *s2);
 char			*ft_strjoinfree(char *s1, char *s2);
 char			*ft_strmap(char const *s, char (*f)(char));
@@ -79,6 +83,8 @@ char			*ft_strnstr(const char *haystack, const char *needle, size_t n);
 char			*ft_strsub(char const *s, unsigned int start, size_t len);
 char			*ft_strtrim(char const *s);
 char			*ft_stolower(char *str);
+
+char			ft_lastchar(char *str);
 
 int				ft_atoi(const char *str);
 int				ft_abs(int n);
@@ -112,6 +118,10 @@ t_list			*ft_lsttail(t_list *lst);
 
 uint8_t			ft_expten(int n);
 uint8_t			ft_iswsp(char c);
+uint8_t			ft_isdir(t_stat sb);
+uint8_t			ft_isdot(char *path);
+uint8_t			ft_isexe(t_stat stat);
+uint8_t			ft_islink(t_stat stat);
 
 void			*ft_memalloc(size_t size);
 void			*ft_memchr(const void *s, int c, size_t n);

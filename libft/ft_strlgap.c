@@ -1,22 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putendl.c                                       :+:      :+:    :+:   */
+/*   ft_strlgap.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/09 15:59:34 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/18 17:55:32 by pchadeni         ###   ########.fr       */
+/*   Created: 2018/01/18 16:32:54 by pchadeni          #+#    #+#             */
+/*   Updated: 2018/01/18 17:05:57 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_putendl(char const *s)
+char	*ft_strlgap(char *str, char delim, int pos)
 {
-	if (s)
+	int		i;
+	int		j;
+	char	*s;
+
+	i = 0;
+	j = 0;
+	s = str;
+	while (s[i] && j < pos)
 	{
-		ft_putstr(s);
-		ft_putchar('\n');
+		if (s[i] == delim)
+		{
+			j++;
+			if (j == pos)
+				return (ft_strsub(s, 0, i));
+		}
+		i++;
 	}
+	return ((pos - 1 == ft_nbchar(str, delim)) ? ft_strsub(s, 0, i) : NULL);
 }
