@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/10 14:48:29 by pchadeni          #+#    #+#             */
-/*   Updated: 2017/11/10 15:59:32 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/19 12:57:46 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ t_list			*ft_lstsplit(char const *s, char c)
 				i += len;
 			}
 			i = (s[i]) ? i + 1 : i;
-			return (lst);
 		}
-	return (NULL);
+	return (lst);
 }

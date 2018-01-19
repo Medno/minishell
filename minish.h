@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 15:06:46 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/16 17:58:25 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/18 13:42:47 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 # include "./libft/libft.h"
 # include <sys/stat.h>
 # include <signal.h>
-
-typedef struct stat	t_stat;
 
 typedef struct	s_line
 {

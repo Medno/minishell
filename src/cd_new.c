@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 18:31:11 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/18 18:32:03 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/19 13:57:21 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,48 +71,6 @@ void	go_home(t_line **env, char **cmd, t_line *pwd, t_line *oldpwd)
 	pwd->value = ft_strdup(home->value);
 }
 
-void	move_dir(char *cmd, t_stat sb, char *p)
-{
-	(void)p;
-	(void)sb;
-	/*
-	   if (p && ft_strchr(p, 'P') && (sb.st_mode & S_IFMT) == S_IFLNK)
-	   {
-	//	char	str[10000];
-	   ft_bzero(str, sizeof(str));
-	   readlink(cmd, str, 10000);
-	   chdir(ft_strjoin("/", str));
-	   }
-	   else
-	   */
-	chdir(cmd);
-}
-/*
-int		check_fold(char *cmd, t_line *pwd, t_line *oldpwd, char *p)
-{
-	t_stat	sb;
-	int		minus;
-
-	minus = (ft_strcmp(cmd, "-") == 0) ? 1 : 0;
-	if (access(cmd, F_OK) == 0 || minus)
-	{
-		lstat(cmd, &sb);
-		if ((sb.st_mode & S_IFMT) == S_IFDIR ||(sb.st_mode & S_IFMT) == S_IFLNK || minus)
-		{
-			if (access(cmd, R_OK) == 0 || minus)
-			{
-				(minus == 0) ? move_dir(cmd, sb, p) : chdir(oldpwd->value);
-				ft_strdel(&(oldpwd->value));
-				oldpwd->value = ft_strdup(pwd->value);
-				return (1);
-			}
-			return (error("cd", cmd, 2));
-		}
-		return (error("cd", cmd, 6));
-	}
-	return (error("cd", cmd, 3));
-}
-*/
 
 uint8_t	slash_del(char **tab, int i)
 {
@@ -121,6 +79,25 @@ uint8_t	slash_del(char **tab, int i)
 			|| ((!tab[i + 1] || (tab[i + 1] && ft_strequ(tab[i], ".."))) && ft_strequ(tab[i], "..")))
 		return (1);
 	return (0);
+}
+
+uint8_t	check_path(char *str, uint8_t i)
+{
+	t_stat	sb;
+
+	if (lstat(str, &sb) == 0)
+	{
+		ft_putendl(str);
+		ft_putendl("a");
+		if (i == 1)
+			return (1);
+		if (ft_isdir(sb) || ft_islink(sb))
+			if (access(str, R_OK) == 0)
+				return (1);
+			return (error("cd", str, 2));
+		return (error("cd", str, 6));
+	}
+	return (error("cd", str, 3));
 }
 
 char	**clean_slash(char **slash, int j)
@@ -146,22 +123,52 @@ char	**clean_slash(char **slash, int j)
 	return (tmp);
 }
 
-uint8_t	check_path(char *str)
+uint8_t	checkpath(t_list *list, char *tmp)
 {
 	t_stat	sb;
 
-	if (access(str, F_OK) == 0)
+	if (lstat(tmp, &sb) == 0)
 	{
-		lstat(str, &sb);
-		if (ft_isdir(sb) || ft_islink(sb))
-			if (access(str, R_OK) == 0)
+		if (access(tmp, R_OK) == -1)
+		{
+			if (list->next && ft_strequ(list->next->content, "..") && !ft_strequ(list->content, ".."))
 				return (1);
-			return (error("cd", str, 2));
-		return (error("cd", str, 6));
+			return (0);
+		}
+		ft_putendl("oui");
+		return (1);
 	}
-	return (error("cd", str, 3));
+	return (3);
 }
 
+int	final_curpath(char *cmd, t_line *pwd, t_line *oldpwd)
+{
+	t_list	*list;
+	char	*tmp;
+	uint8_t	check;
+
+	list = ft_lstsplit(cmd + 1, '/');
+	(void)pwd;
+	(void)oldpwd;
+	tmp = ft_strdup("/");
+	while (list)
+	{
+		if ((check = checkpath(list, tmp)) == 1)
+		{
+			tmp = ft_strjoinfree(tmp, (char *)list->content);
+			tmp = ft_strjoinfree(tmp, "/");
+		}
+		else
+			break ;
+		list = list->next;
+	}
+	ft_putendl(tmp);
+	ft_putnbr(check);
+	if (check != 1 && list->next)
+		ft_putendl("ERROOR");
+	return (1);
+}
+/*
 int	step_8(char *tmp, t_line *pwd, t_line *oldpwd)
 {
 	char	*del;
@@ -174,7 +181,7 @@ int	step_8(char *tmp, t_line *pwd, t_line *oldpwd)
 	j = 0;
 	while ((del = ft_strlgap(tmp, '/', i)))
 	{
-		if (check_path(del) == 0)
+		if (check_path(del, 1) == 0)
 		{
 			ft_strdel(&del);
 			return (0);
@@ -201,7 +208,7 @@ int	step_8(char *tmp, t_line *pwd, t_line *oldpwd)
 			tmp = ft_strjoinfree(tmp, "/");
 		i++;
 	}
-	if (check_path(tmp))
+	if (check_path(tmp, 0))
 	{
 		ft_strdel(&(oldpwd->value));
 		oldpwd->value = ft_strdup(pwd->value);
@@ -214,7 +221,7 @@ int	step_8(char *tmp, t_line *pwd, t_line *oldpwd)
 	ft_tabdel(epur);
 	return (1);
 }
-
+*/
 int	opt_l(char *curpath, t_line *pwd, t_line *oldpwd)
 {
 	char	*tmp;
@@ -228,7 +235,8 @@ int	opt_l(char *curpath, t_line *pwd, t_line *oldpwd)
 	}
 	else
 		tmp = curpath;
-	if (!step_8(tmp, pwd, oldpwd))
+//	if (!step_8(tmp, pwd, oldpwd))
+	if (!final_curpath(tmp, pwd, oldpwd))
 		return (0);
 	return (1);
 }
@@ -242,7 +250,7 @@ char	*concat_cdpath(char *cmd, char *path)
 	while ((gap = ft_strgap(path, ':', i)))
 	{
 		gap = ft_strjoinfree(gap, cmd);
-		if (check_path(gap))
+		if (check_path(gap, 0))
 			return (gap);
 		ft_strdel(&gap);
 		i++;
@@ -255,8 +263,8 @@ int		check_fold(char *cmd, t_line **env, char *p)
 	char	*curpath;
 	t_line	*cdpath;
 	t_line	*pwd;
-		char	str[10000];
-t_stat	sb;
+	char	str[10000];
+	t_stat	sb;
 
 	pwd = get_pwd(env, "PWD");
 	if (cmd[0] != '/' && !ft_isdot(cmd))
@@ -270,7 +278,7 @@ t_stat	sb;
 		curpath = ft_strdup(cmd);
 	if (p && ft_strchr(p, 'P'))
 	{
-		if (check_path(curpath))
+		if (check_path(curpath, 0))
 		{
 			lstat(curpath, &sb);
 			if (ft_islink(sb))

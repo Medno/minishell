@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 16:32:54 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/18 17:05:57 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/19 10:37:45 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ char	*ft_strlgap(char *str, char delim, int pos)
 	i = 0;
 	j = 0;
 	s = str;
-	while (s[i] && j < pos)
+	while (s[i] && j <= pos)
 	{
-		if (s[i] == delim)
+		if (s[i] == delim && i != 0)
 		{
 			j++;
 			if (j == pos)
@@ -31,5 +31,5 @@ char	*ft_strlgap(char *str, char delim, int pos)
 		}
 		i++;
 	}
-	return ((pos - 1 == ft_nbchar(str, delim)) ? ft_strsub(s, 0, i) : NULL);
+	return ((pos - 1 <= ft_nbchar(str, delim)) ? ft_strsub(s, 0, i) : NULL);
 }
