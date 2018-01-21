@@ -71,7 +71,6 @@ void	go_home(t_line **env, char **cmd, t_line *pwd, t_line *oldpwd)
 	pwd->value = ft_strdup(home->value);
 }
 
-
 uint8_t	slash_del(char **tab, int i)
 {
 	if ((tab[i + 1] && tab[i] && ft_strequ(tab[i + 1], "..") &&
@@ -92,12 +91,30 @@ uint8_t	check_path(char *str, uint8_t i)
 		if (i == 1)
 			return (1);
 		if (ft_isdir(sb) || ft_islink(sb))
-			if (access(str, R_OK) == 0)
+			if (access(str, X_OK) == 0)
 				return (1);
 			return (error("cd", str, 2));
 		return (error("cd", str, 6));
 	}
 	return (error("cd", str, 3));
+}
+
+char	*concat_cdpath(char *cmd, char *path)
+{
+	char	*gap;
+	int		i;
+
+	i = 1;
+	while ((gap = ft_strgap(path, ':', i)))
+	{
+		gap = ft_strjoinfree(gap, "/");
+		gap = ft_strjoinfree(gap, cmd);
+		if (check_path(gap, 0))
+			return (gap);
+		ft_strdel(&gap);
+		i++;
+	}
+	return (NULL);
 }
 
 char	**clean_slash(char **slash, int j)
@@ -125,53 +142,42 @@ char	**clean_slash(char **slash, int j)
 
 uint8_t	checkpath(t_list *list, char *tmp)
 {
+	char	*str;
 	t_stat	sb;
 
-	if (lstat(tmp, &sb) == 0)
+ft_putendl("chkpath_1");
+	if (!list)
+		return (4);
+ft_putendl("chkpath_2");
+	str = ft_strjoin(tmp, list->content);
+ft_putendl("chkpath_3");
+	if (lstat(str, &sb) == 0)
 	{
-		if (access(tmp, R_OK) == -1)
+ft_putendl("chkpath_4");
+		ft_strdel(&str);
+ft_putendl("chkpath_5");
+		if (!ft_isexe(sb))
 		{
-			if (list->next && ft_strequ(list->next->content, "..") && !ft_strequ(list->content, ".."))
-				return (1);
-			return (0);
-		}
 		ft_putendl("oui");
-		return (1);
+			if (list->next && ft_strequ(list->next->content, "..") &&
+					!ft_strequ(list->content, ".."))
+				return (2);
+			return (error("cd", tmp, 2));
+		}
+		if (list->next && ft_strequ(list->next->content, "..") &&
+				!ft_strequ(list->content, ".."))
+			return (2);
+		else
+			return (1);
 	}
+	ft_strdel(&str);
 	return (3);
 }
 
-int	final_curpath(char *cmd, t_line *pwd, t_line *oldpwd)
-{
-	t_list	*list;
-	char	*tmp;
-	uint8_t	check;
 
-	list = ft_lstsplit(cmd + 1, '/');
-	(void)pwd;
-	(void)oldpwd;
-	tmp = ft_strdup("/");
-	while (list)
-	{
-		if ((check = checkpath(list, tmp)) == 1)
-		{
-			tmp = ft_strjoinfree(tmp, (char *)list->content);
-			tmp = ft_strjoinfree(tmp, "/");
-		}
-		else
-			break ;
-		list = list->next;
-	}
-	ft_putendl(tmp);
-	ft_putnbr(check);
-	if (check != 1 && list->next)
-		ft_putendl("ERROOR");
-	return (1);
-}
-/*
 int	step_8(char *tmp, t_line *pwd, t_line *oldpwd)
 {
-	char	*del;
+//	char	*del;
 	char	**epur;
 	char	**slash;
 	int		i;
@@ -179,7 +185,7 @@ int	step_8(char *tmp, t_line *pwd, t_line *oldpwd)
 
 	i = 0;
 	j = 0;
-	while ((del = ft_strlgap(tmp, '/', i)))
+/*	while ((del = ft_strlgap(tmp, '/', i)))
 	{
 		if (check_path(del, 1) == 0)
 		{
@@ -189,16 +195,18 @@ int	step_8(char *tmp, t_line *pwd, t_line *oldpwd)
 		ft_strdel(&del);
 		i++;
 	}
+*/
 	slash = ft_strsplit(tmp, '/');
-	i = 0;
 	while (slash[i])
 	{
 		if (slash_del(slash, i) == 0)
 			j++;
 		i++;
 	}
+ft_putendl("stp8_1");
 	ft_strdel(&tmp);
 	epur = clean_slash(slash, j);
+ft_putendl("stp8_2");
 	tmp = ft_strdup("/");
 	i = 0;
 	while (epur && epur[i])
@@ -216,13 +224,71 @@ int	step_8(char *tmp, t_line *pwd, t_line *oldpwd)
 		pwd->value = ft_strdup(tmp);
 		chdir(tmp);
 	}
+ft_putendl("stp8_3");
 	ft_strdel(&tmp);
 	ft_tabdel(slash);
 	ft_tabdel(epur);
+ft_putendl("stp8_4");
 	return (1);
 }
-*/
-int	opt_l(char *curpath, t_line *pwd, t_line *oldpwd)
+
+int	final_curpath(char *str, t_line *pwd, t_line *oldpwd)
+{
+	t_list	*list;
+	t_list	*come_to_first;
+	t_list	*prev;
+	char	*tmp;
+	uint8_t	check;
+
+	come_to_first = ft_lstsplit(str, '/');
+	list = come_to_first;
+	prev = list;
+	tmp = ft_strdup("/");
+	while (list)
+	{
+ft_putendl("list content :");
+ft_putendl(list->content);
+		if ((check = checkpath(list, tmp)) == 2)
+		{
+ft_putendl("== 2");
+			if (list == come_to_first)
+				break ;
+			prev->next = (list->next) ? list->next->next : NULL;
+			ft_lstdelone(&list->next, ft_lstclean);
+			ft_lstdelone(&list, ft_lstclean);
+			ft_strdel(&tmp);
+			tmp = ft_strdup("/");
+			list = come_to_first;
+			prev = list;
+		}
+		else if (check == 1)
+		{
+			tmp = ft_strjoinfree(tmp, (char *)list->content);
+			tmp = ft_strjoinfree(tmp, "/");
+		}
+		else if (check == 3)
+		{
+			return (error("cd", str, 3));
+		}
+		if (check != 2)
+		{
+			prev = list;
+			list = list->next;
+		}
+ft_putendl(tmp);
+	}
+ft_putendl("b");
+	ft_lstdel(&come_to_first, ft_lstclean);
+ft_putendl("c");
+ft_putnbr(check);
+	if (check == 0 || check == 3)
+		ft_putendl("ERROR");
+	else if (!step_8(tmp, pwd, oldpwd))
+		return (0);
+	return (1);
+}
+
+int		opt_l(char *curpath, t_line *pwd, t_line *oldpwd)
 {
 	char	*tmp;
 
@@ -234,28 +300,21 @@ int	opt_l(char *curpath, t_line *pwd, t_line *oldpwd)
 		tmp = ft_strjoinfree(tmp, curpath);
 	}
 	else
-		tmp = curpath;
+		tmp = ft_strdup(curpath);
 //	if (!step_8(tmp, pwd, oldpwd))
+ft_putendl("Avant final :");
+ft_putendl(tmp);
+	ft_strdel(&curpath);
 	if (!final_curpath(tmp, pwd, oldpwd))
-		return (0);
-	return (1);
-}
-
-char	*concat_cdpath(char *cmd, char *path)
-{
-	char	*gap;
-	int		i;
-
-	i = 1;
-	while ((gap = ft_strgap(path, ':', i)))
 	{
-		gap = ft_strjoinfree(gap, cmd);
-		if (check_path(gap, 0))
-			return (gap);
-		ft_strdel(&gap);
-		i++;
+ft_putendl("opt_l_1");
+	ft_strdel(&tmp);
+		return (0);
 	}
-	return (NULL);
+ft_putendl("opt_l_2");
+	ft_strdel(&tmp);
+ft_putendl("opt_l_3");
+	return (1);
 }
 
 int		check_fold(char *cmd, t_line **env, char *p)
@@ -263,8 +322,6 @@ int		check_fold(char *cmd, t_line **env, char *p)
 	char	*curpath;
 	t_line	*cdpath;
 	t_line	*pwd;
-	char	str[10000];
-	t_stat	sb;
 
 	pwd = get_pwd(env, "PWD");
 	if (cmd[0] != '/' && !ft_isdot(cmd))
@@ -280,21 +337,10 @@ int		check_fold(char *cmd, t_line **env, char *p)
 	{
 		if (check_path(curpath, 0))
 		{
-			lstat(curpath, &sb);
-			if (ft_islink(sb))
-			{
-	  			ft_bzero(str, sizeof(str));
-	   			readlink(cmd, str, 10000);
-				chdir(ft_strjoin("/", str));
-				ft_strdel(&(pwd->value));
-				pwd->value = ft_strjoin("/", str);
-			}
-			else
-			{
-				chdir(curpath);
-				ft_strdel(&(pwd->value));
-				pwd->value = curpath;
-			}
+			chdir(curpath);
+			ft_strdel(&(pwd->value));
+			pwd->value = getcwd(pwd->value, 0);
+			ft_strdel(&curpath);
 		}
 	}
 	else if (!p || (p && ft_strchr(p, 'L')))

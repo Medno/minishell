@@ -17,6 +17,7 @@ t_list			*ft_lstsplit(char const *s, char c)
 	t_list	*lst;
 	size_t	i;
 	size_t	len;
+	char	*tmp;
 
 	i = 0;
 	len = 0;
@@ -29,7 +30,9 @@ t_list			*ft_lstsplit(char const *s, char c)
 				len = 0;
 				while (s[i + len] != c && s[i + len])
 					len++;
-				ft_lstaddlast(&lst, ft_lstnew(ft_strsub(s, i, len), len));
+				tmp = ft_strsub(s, i, len);
+				ft_lstaddlast(&lst, ft_lstnew(tmp, len));
+				ft_strdel(&tmp);
 				i += len;
 			}
 			i = (s[i]) ? i + 1 : i;
