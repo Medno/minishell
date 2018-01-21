@@ -21,7 +21,7 @@ t_line	*get_pwd(t_line **env, char *str)
 		pwd = *env;
 		while (pwd && pwd->next)
 		{
-			if (ft_strcmp(pwd->var, str) == 0)
+			if (ft_strequ(pwd->var, str))
 				return (pwd);
 			pwd = pwd->next;
 		}
@@ -40,7 +40,7 @@ t_line	*get_home(t_line *env)
 	tmp = env;
 	while (tmp)
 	{
-		if (ft_strcmp(tmp->var, "HOME") == 0)
+		if (ft_strequ(tmp->var, "HOME"))
 		{
 			if (access(tmp->value, F_OK) == 0)
 				return (tmp);
@@ -56,10 +56,14 @@ t_line	*get_home(t_line *env)
 	return (NULL);
 }
 
-void	go_home(t_line **env, char **cmd, t_line *pwd, t_line *oldpwd)
+void	go_home(t_line **env, char **cmd)
 {
 	t_line	*home;
+	t_line	*pwd;
+	t_line	*oldpwd;
 
+	pwd = get_pwd(env, "PWD");
+	oldpwd = get_pwd(env, "OLDPWD");
 	home = get_home(*env);
 	ft_strdel(&(oldpwd->value));
 	oldpwd->value = ft_strdup(pwd->value);
@@ -86,8 +90,6 @@ uint8_t	check_path(char *str, uint8_t i)
 
 	if (lstat(str, &sb) == 0)
 	{
-		ft_putendl(str);
-		ft_putendl("a");
 		if (i == 1)
 			return (1);
 		if (ft_isdir(sb) || ft_islink(sb))
@@ -145,20 +147,14 @@ uint8_t	checkpath(t_list *list, char *tmp)
 	char	*str;
 	t_stat	sb;
 
-ft_putendl("chkpath_1");
 	if (!list)
 		return (4);
-ft_putendl("chkpath_2");
 	str = ft_strjoin(tmp, list->content);
-ft_putendl("chkpath_3");
 	if (lstat(str, &sb) == 0)
 	{
-ft_putendl("chkpath_4");
 		ft_strdel(&str);
-ft_putendl("chkpath_5");
 		if (!ft_isexe(sb))
 		{
-		ft_putendl("oui");
 			if (list->next && ft_strequ(list->next->content, "..") &&
 					!ft_strequ(list->content, ".."))
 				return (2);
@@ -167,8 +163,7 @@ ft_putendl("chkpath_5");
 		if (list->next && ft_strequ(list->next->content, "..") &&
 				!ft_strequ(list->content, ".."))
 			return (2);
-		else
-			return (1);
+		return (1);
 	}
 	ft_strdel(&str);
 	return (3);
@@ -177,7 +172,6 @@ ft_putendl("chkpath_5");
 
 int	step_8(char *tmp, t_line *pwd, t_line *oldpwd)
 {
-//	char	*del;
 	char	**epur;
 	char	**slash;
 	int		i;
@@ -185,17 +179,6 @@ int	step_8(char *tmp, t_line *pwd, t_line *oldpwd)
 
 	i = 0;
 	j = 0;
-/*	while ((del = ft_strlgap(tmp, '/', i)))
-	{
-		if (check_path(del, 1) == 0)
-		{
-			ft_strdel(&del);
-			return (0);
-		}
-		ft_strdel(&del);
-		i++;
-	}
-*/
 	slash = ft_strsplit(tmp, '/');
 	while (slash[i])
 	{
@@ -203,10 +186,8 @@ int	step_8(char *tmp, t_line *pwd, t_line *oldpwd)
 			j++;
 		i++;
 	}
-ft_putendl("stp8_1");
 	ft_strdel(&tmp);
 	epur = clean_slash(slash, j);
-ft_putendl("stp8_2");
 	tmp = ft_strdup("/");
 	i = 0;
 	while (epur && epur[i])
@@ -224,11 +205,9 @@ ft_putendl("stp8_2");
 		pwd->value = ft_strdup(tmp);
 		chdir(tmp);
 	}
-ft_putendl("stp8_3");
 	ft_strdel(&tmp);
 	ft_tabdel(slash);
 	ft_tabdel(epur);
-ft_putendl("stp8_4");
 	return (1);
 }
 
@@ -246,11 +225,8 @@ int	final_curpath(char *str, t_line *pwd, t_line *oldpwd)
 	tmp = ft_strdup("/");
 	while (list)
 	{
-ft_putendl("list content :");
-ft_putendl(list->content);
 		if ((check = checkpath(list, tmp)) == 2)
 		{
-ft_putendl("== 2");
 			if (list == come_to_first)
 				break ;
 			prev->next = (list->next) ? list->next->next : NULL;
@@ -267,20 +243,14 @@ ft_putendl("== 2");
 			tmp = ft_strjoinfree(tmp, "/");
 		}
 		else if (check == 3)
-		{
 			return (error("cd", str, 3));
-		}
 		if (check != 2)
 		{
 			prev = list;
 			list = list->next;
 		}
-ft_putendl(tmp);
 	}
-ft_putendl("b");
 	ft_lstdel(&come_to_first, ft_lstclean);
-ft_putendl("c");
-ft_putnbr(check);
 	if (check == 0 || check == 3)
 		ft_putendl("ERROR");
 	else if (!step_8(tmp, pwd, oldpwd))
@@ -302,18 +272,13 @@ int		opt_l(char *curpath, t_line *pwd, t_line *oldpwd)
 	else
 		tmp = ft_strdup(curpath);
 //	if (!step_8(tmp, pwd, oldpwd))
-ft_putendl("Avant final :");
-ft_putendl(tmp);
 	ft_strdel(&curpath);
 	if (!final_curpath(tmp, pwd, oldpwd))
 	{
-ft_putendl("opt_l_1");
-	ft_strdel(&tmp);
+		ft_strdel(&tmp);
 		return (0);
 	}
-ft_putendl("opt_l_2");
 	ft_strdel(&tmp);
-ft_putendl("opt_l_3");
 	return (1);
 }
 
@@ -351,20 +316,20 @@ int		check_fold(char *cmd, t_line **env, char *p)
 
 int		p_cd(t_line **env, char **cmd)
 {
-	t_line	*pwd;
-	t_line	*oldpwd;
+//	t_line	*pwd;
+//	t_line	*oldpwd;
 	char	*p;
 	int		i;
 
-	pwd = get_pwd(env, "PWD");
-	oldpwd = get_pwd(env, "OLDPWD");
+//	pwd = get_pwd(env, "PWD");
+//	oldpwd = get_pwd(env, "OLDPWD");
 	i = 1;
 	p = ft_getopt(cmd, &i);
 	(!ft_checkopt(p, "LP", 2) || !ft_strcmp(cmd[i], "-") || !(i - 1)) ? 0 : i--;
 	if (cmd[i] && cmd[i + 1])
 		return (error("cd", cmd[i], 1));
 	if ((!cmd[i] || cmd[i][0] == '~') && get_home(*env))
-		go_home(env, cmd, pwd, oldpwd);
+		go_home(env, cmd);
 	else if (cmd[i] && cmd[i][0] != '~')
 		if (check_fold(cmd[i], env, p) == 0)
 			return (0);
