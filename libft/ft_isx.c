@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 13:43:37 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/18 13:44:29 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/22 17:08:23 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ uint8_t	ft_islink(t_stat stat)
 	return (0);
 }
 
-uint8_t		ft_iswsp(char c)
+uint8_t	ft_iswsp(char c)
 {
 	if (c == ' ' || (c > 8 && c < 12))
 		return (1);

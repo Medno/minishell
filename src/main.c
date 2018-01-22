@@ -6,13 +6,13 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 14:58:40 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/17 18:24:53 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/22 18:19:30 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minish.h"
 
-pid_t	fath = -1;
+pid_t	g_fath = -1;
 
 uint8_t	is_built(char *str)
 {
@@ -67,15 +67,15 @@ void	check_bin(char **tenv, char **ncmd, char *path)
 	}
 }
 
-void kill_child(int sig)
+void	kill_child(int sig)
 {
 	sig = 0;
 	(void)sig;
-	if (fath > 0)
-		kill(fath, SIGTERM);
-	fath = -1;
+	if (g_fath > 0)
+		kill(g_fath, SIGTERM);
+	g_fath = -1;
 	ft_putchar('\n');
-	signal(SIGINT ,(void (*)(int))kill_child);
+	signal(SIGINT, (void (*)(int))kill_child);
 }
 
 void	exec_bin(t_line **env, char **ncmd)
@@ -84,10 +84,10 @@ void	exec_bin(t_line **env, char **ncmd)
 	t_line	*path;
 
 	path = get_smtg(*env, "PATH");
-	fath = fork();
+	g_fath = fork();
 	tenv = line_to_tab(env);
-	signal(SIGINT ,(void (*)(int))kill_child);
-	if (fath == 0)
+	signal(SIGINT, (void (*)(int))kill_child);
+	if (g_fath == 0)
 	{
 		(path != NULL) ? check_bin(tenv, ncmd, path->value) : 0;
 		execve(ncmd[0], ncmd, tenv);
@@ -96,8 +96,8 @@ void	exec_bin(t_line **env, char **ncmd)
 		(ncmd != NULL) ? ft_tabdel(ncmd) : 0;
 		exit(0);
 	}
-	if (fath > 0)
-		wait(&fath);
+	if (g_fath > 0)
+		wait(&g_fath);
 	(tenv != NULL) ? ft_tabdel(tenv) : 0;
 }
 
@@ -128,7 +128,7 @@ uint8_t	execute_cmd(t_line **env, char *cmd)
 void	p_prompt(void)
 {
 	char	*tmp;
-	
+
 	tmp = NULL;
 	tmp = getcwd(tmp, 0);
 	ft_putcolor(tmp, LIGHT_BLUE);
@@ -146,18 +146,41 @@ void	prompt(int sig)
 	}
 }
 
+void	putinstr(char **str, char c)
+{
+	char	*tmp;
+
+	tmp = NULL;
+	if (!*str)
+	{
+		*str = ft_strnew(1);
+		**str = c;
+	}
+	else
+	{
+		tmp = ft_strnew(1);
+		tmp[0] = c;
+		*str = ft_strjoinfree(*str, tmp);
+	}
+	ft_strdel(&tmp);
+}
+
 int	exec(t_line **env, uint8_t again)
 {
+	char	car;
 	char	*cmd;
 	int		i;
 	char	**semicolon;
 
 	i = 0;
+	again = 0;
+	cmd = NULL;
 	p_prompt();
-	signal(SIGINT ,(void (*)(int))prompt);
-	get_next_line(0, &cmd);
+	signal(SIGINT, (void (*)(int))prompt);
+	while ((read(0, &car, 1)) > 0 && car != '\n')
+		putinstr(&cmd, car);
 	semicolon = ft_strsplit(cmd, ';');
-	while (semicolon[i])
+	while (semicolon && semicolon[i])
 	{
 		again = execute_cmd(env, semicolon[i]);
 		i++;
@@ -178,7 +201,7 @@ int	main(int ac, char **av, char **env)
 	nenv = fill_line(env);
 	while (again)
 		again = exec(&nenv, again);
+	ft_putcolor("exit\n", LIGHT_RED);
 	del_line(&nenv);
-	//	while(1) ft_putchar('\0');
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/10 17:04:03 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/16 17:57:40 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/22 12:53:52 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@ int	error(char *built, char *cmd, int code)
 	(code == 4) ? ft_putstr(": not a directory: ") : 0;
 	(code == 5) ? ft_putstr(": command not found: ") : 0;
 	(code == 6) ? ft_putstr(": not a directory: ") : 0;
-	ft_putendl(cmd);
+	(code == 7) ? ft_putstr(": ") : 0;
+	(code == 7) ? ft_putstr(cmd) : ft_putendl(cmd);
+	(code == 7) ? ft_putendl(" not set") : 0;
 	return (0);
 }
 

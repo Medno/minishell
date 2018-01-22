@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 18:31:11 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/19 13:57:21 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/22 18:03:59 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,53 +33,55 @@ t_line	*get_pwd(t_line **env, char *str)
 	return (pwd);
 }
 
-t_line	*get_home(t_line *env)
-{
-	t_line	*tmp;
-
-	tmp = env;
-	while (tmp)
-	{
-		if (ft_strequ(tmp->var, "HOME"))
-		{
-			if (access(tmp->value, F_OK) == 0)
-				return (tmp);
-			else
-			{
-				ft_putstr("cd: no such file or directory: ");
-				ft_putendl(tmp->value);
-				return (NULL);
-			}
-		}
-		tmp = tmp->next;
-	}
-	return (NULL);
-}
-
-void	go_home(t_line **env, char **cmd)
+char	*copy_home(t_line *env, char *path)
 {
 	t_line	*home;
+	char	*tmp;
+
+	home = get_smtg(env, "HOME");
+	if (home)
+	{
+		tmp = ft_strdup(home->value);
+		tmp = ft_strjoinfree(tmp, "/");
+		tmp = (path && path[0] == '~' && path[1]) ?
+			ft_strjoinfree(tmp, &path[2]) : tmp;
+		ft_strdel(&path);
+		path = ft_strdup(tmp);
+		ft_strdel(&tmp);
+	}
+	else
+		ft_strdel(&path);
+	return (path);
+}
+
+uint8_t	go_oldpwd(t_line **env)
+{
 	t_line	*pwd;
 	t_line	*oldpwd;
+	char	*tmp;
 
-	pwd = get_pwd(env, "PWD");
-	oldpwd = get_pwd(env, "OLDPWD");
-	home = get_home(*env);
-	ft_strdel(&(oldpwd->value));
-	oldpwd->value = ft_strdup(pwd->value);
-	if (cmd[1] && cmd[1][0] == '~' && cmd[1][1])
-		chdir(ft_strjoin((home->value), &cmd[1][1]));
+	if ((oldpwd = get_smtg(*env, "OLDPWD")))
+	{
+		pwd = get_pwd(env, "PWD");
+		tmp = pwd->value;
+		pwd->value = oldpwd->value;
+		oldpwd->value = tmp;
+		chdir(pwd->value);
+		return (0);
+	}
 	else
-		chdir(home->value);
-	ft_strdel(&pwd->value);
-	pwd->value = ft_strdup(home->value);
+	{
+		error("cd", "OLDPWD", 7);
+		return (7);
+	}
 }
 
 uint8_t	slash_del(char **tab, int i)
 {
 	if ((tab[i + 1] && tab[i] && ft_strequ(tab[i + 1], "..") &&
 				!ft_strequ(tab[i], "..")) || ft_strequ(tab[i], ".")
-			|| ((!tab[i + 1] || (tab[i + 1] && ft_strequ(tab[i], ".."))) && ft_strequ(tab[i], "..")))
+			|| ((!tab[i + 1] || (tab[i + 1] && ft_strequ(tab[i], "..")))
+				&& ft_strequ(tab[i], "..")))
 		return (1);
 	return (0);
 }
@@ -93,12 +95,14 @@ uint8_t	check_path(char *str, uint8_t i)
 		if (i == 1)
 			return (1);
 		if (ft_isdir(sb) || ft_islink(sb))
+		{
 			if (access(str, X_OK) == 0)
-				return (1);
-			return (error("cd", str, 2));
-		return (error("cd", str, 6));
+				return (0);
+			return (2);
+		}
+		return (6);
 	}
-	return (error("cd", str, 3));
+	return (3);
 }
 
 char	*concat_cdpath(char *cmd, char *path)
@@ -169,8 +173,7 @@ uint8_t	checkpath(t_list *list, char *tmp)
 	return (3);
 }
 
-
-int	step_8(char *tmp, t_line *pwd, t_line *oldpwd)
+void	clean_path(char **tmp)
 {
 	char	**epur;
 	char	**slash;
@@ -179,25 +182,33 @@ int	step_8(char *tmp, t_line *pwd, t_line *oldpwd)
 
 	i = 0;
 	j = 0;
-	slash = ft_strsplit(tmp, '/');
-	while (slash[i])
+	slash = ft_strsplit(*tmp, '/');
+	while (slash && slash[i])
 	{
-		if (slash_del(slash, i) == 0)
-			j++;
+		j = (!slash_del(slash, i)) ? j + 1 : j;
 		i++;
 	}
-	ft_strdel(&tmp);
+	ft_strdel(tmp);
 	epur = clean_slash(slash, j);
-	tmp = ft_strdup("/");
+	*tmp = ft_strdup("/");
 	i = 0;
 	while (epur && epur[i])
 	{
-		tmp = ft_strjoinfree(tmp, epur[i]);
-		if (epur[i + 1])
-			tmp = ft_strjoinfree(tmp, "/");
+		*tmp = ft_strjoinfree(*tmp, epur[i]);
+		*tmp = (epur[i + 1]) ? ft_strjoinfree(*tmp, "/") : *tmp;
 		i++;
 	}
-	if (check_path(tmp, 0))
+	ft_tabdel(slash);
+	ft_tabdel(epur);
+}
+
+int		step_8(char *tmp, t_line *pwd, t_line *oldpwd)
+{
+	int	check;
+
+	clean_path(&tmp);
+	check = check_path(tmp, 0);
+	if (check == 0)
 	{
 		ft_strdel(&(oldpwd->value));
 		oldpwd->value = ft_strdup(pwd->value);
@@ -205,62 +216,66 @@ int	step_8(char *tmp, t_line *pwd, t_line *oldpwd)
 		pwd->value = ft_strdup(tmp);
 		chdir(tmp);
 	}
+	ft_putendl(tmp);
 	ft_strdel(&tmp);
-	ft_tabdel(slash);
-	ft_tabdel(epur);
-	return (1);
+	return (check);
+}
+
+int		compress_path(t_list **first, t_list **list, t_list **prev, char **tmp)
+{
+	int	check;
+
+	while (ft_strequ((*list)->content, "."))
+		*list = (*list)->next;
+	if ((check = checkpath(*list, *tmp)) == 2)
+	{
+		if (*list == *first)
+			*first = (*list)->next->next;
+		else
+			(*prev)->next = ((*list)->next) ? (*list)->next->next : NULL;
+		ft_lstdelone(&(*list)->next, ft_lstclean);
+		ft_lstdelone(list, ft_lstclean);
+		ft_strdel(tmp);
+		*tmp = ft_strdup("/");
+		*list = *first;
+		*prev = *list;
+	}
+	else if (check == 1)
+	{
+		*tmp = ft_strjoinfree(*tmp, (char *)(*list)->content);
+		*tmp = ft_strjoinfree(*tmp, "/");
+	}
+	*prev = *list;
+	*list = (check != 2) ? (*list)->next : *list;
+	return (check);
 }
 
 int	final_curpath(char *str, t_line *pwd, t_line *oldpwd)
 {
 	t_list	*list;
-	t_list	*come_to_first;
+	t_list	*first;
 	t_list	*prev;
 	char	*tmp;
 	uint8_t	check;
 
-	come_to_first = ft_lstsplit(str, '/');
-	list = come_to_first;
+	first = ft_lstsplit(str, '/');
+	check = 1;
+	list = first;
 	prev = list;
 	tmp = ft_strdup("/");
-	while (list)
-	{
-		if ((check = checkpath(list, tmp)) == 2)
-		{
-			if (list == come_to_first)
-				break ;
-			prev->next = (list->next) ? list->next->next : NULL;
-			ft_lstdelone(&list->next, ft_lstclean);
-			ft_lstdelone(&list, ft_lstclean);
-			ft_strdel(&tmp);
-			tmp = ft_strdup("/");
-			list = come_to_first;
-			prev = list;
-		}
-		else if (check == 1)
-		{
-			tmp = ft_strjoinfree(tmp, (char *)list->content);
-			tmp = ft_strjoinfree(tmp, "/");
-		}
-		else if (check == 3)
-			return (error("cd", str, 3));
-		if (check != 2)
-		{
-			prev = list;
-			list = list->next;
-		}
-	}
-	ft_lstdel(&come_to_first, ft_lstclean);
+	while (list && check != 3)
+		check = compress_path(&first, &list, &prev, &tmp);
+	(first) ? ft_lstdel(&first, ft_lstclean) : 0;
 	if (check == 0 || check == 3)
-		ft_putendl("ERROR");
-	else if (!step_8(tmp, pwd, oldpwd))
-		return (0);
-	return (1);
+		return (check);
+	check = step_8(tmp, pwd, oldpwd);
+	return (check);
 }
 
 int		opt_l(char *curpath, t_line *pwd, t_line *oldpwd)
 {
 	char	*tmp;
+	int		res;
 
 	if (curpath[0] != '/')
 	{
@@ -271,15 +286,10 @@ int		opt_l(char *curpath, t_line *pwd, t_line *oldpwd)
 	}
 	else
 		tmp = ft_strdup(curpath);
-//	if (!step_8(tmp, pwd, oldpwd))
 	ft_strdel(&curpath);
-	if (!final_curpath(tmp, pwd, oldpwd))
-	{
-		ft_strdel(&tmp);
-		return (0);
-	}
+	res = final_curpath(tmp, pwd, oldpwd);
 	ft_strdel(&tmp);
-	return (1);
+	return (res);
 }
 
 int		check_fold(char *cmd, t_line **env, char *p)
@@ -298,41 +308,39 @@ int		check_fold(char *cmd, t_line **env, char *p)
 	}
 	else if (ft_isdot(cmd) || cmd[0] == '/')
 		curpath = ft_strdup(cmd);
-	if (p && ft_strchr(p, 'P'))
+	if (p && ft_strchr(p, 'P') && check_path(curpath, 0))
 	{
-		if (check_path(curpath, 0))
-		{
-			chdir(curpath);
-			ft_strdel(&(pwd->value));
-			pwd->value = getcwd(pwd->value, 0);
-			ft_strdel(&curpath);
-		}
+		chdir(curpath);
+		ft_strdel(&(pwd->value));
+		pwd->value = getcwd(pwd->value, 0);
+		ft_strdel(&curpath);
 	}
 	else if (!p || (p && ft_strchr(p, 'L')))
-		if (!opt_l(curpath, pwd, get_pwd(env, "OLDPWD")))
-			return (0);
-	return (1);
+		return (opt_l(curpath, pwd, get_pwd(env, "OLDPWD")));
+	return (0);
 }
 
 int		p_cd(t_line **env, char **cmd)
 {
-//	t_line	*pwd;
-//	t_line	*oldpwd;
+	char	*path;
 	char	*p;
+	int		err;
 	int		i;
 
-//	pwd = get_pwd(env, "PWD");
-//	oldpwd = get_pwd(env, "OLDPWD");
 	i = 1;
 	p = ft_getopt(cmd, &i);
-	(!ft_checkopt(p, "LP", 2) || !ft_strcmp(cmd[i], "-") || !(i - 1)) ? 0 : i--;
-	if (cmd[i] && cmd[i + 1])
-		return (error("cd", cmd[i], 1));
-	if ((!cmd[i] || cmd[i][0] == '~') && get_home(*env))
-		go_home(env, cmd);
-	else if (cmd[i] && cmd[i][0] != '~')
-		if (check_fold(cmd[i], env, p) == 0)
-			return (0);
+	(!ft_checkopt(p, "LP", 2) || !(i - 1)) ? 0 : i--;
+	err = (cmd[i] && cmd[i + 1]) ? 1 : 0;
+	path = (cmd[i]) ? ft_strdup(cmd[i]) : NULL;
+	if (path && ft_strequ(path, "-"))
+		err = go_oldpwd(env);
+	else
+	{
+		path = ((!path || path[0] == '~')) ? copy_home(*env, path) : path;
+		err = (!path) ? error("cd", "HOME", 7) : check_fold(path, env, p);
+	}
+	(err && err != 7) ? error("cd", cmd[i], err) : 0;
+	ft_strdel(&path);
 	ft_strdel(&p);
 	return (1);
 }
