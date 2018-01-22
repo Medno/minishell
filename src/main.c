@@ -173,7 +173,7 @@ int	exec(t_line **env, uint8_t again)
 	char	**semicolon;
 
 	i = 0;
-	again = 0;
+	again = 1;
 	cmd = NULL;
 	p_prompt();
 	signal(SIGINT, (void (*)(int))prompt);

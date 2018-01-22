@@ -87,7 +87,7 @@ void	p_line(t_line *line, uint8_t i, char *del)
 	tmp = line;
 	while (tmp)
 	{
-		if (i == 0 || (i == 1 && ft_strcmp(del, tmp->var) != 0))
+		if (i == 0 || (i == 1 && !ft_strequ(del, tmp->var)))
 		{
 			ft_putstr(tmp->var);
 			ft_putchar('=');

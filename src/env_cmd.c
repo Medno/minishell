@@ -23,14 +23,15 @@ void	env_null(t_line *env, char **cmd, int i)
 		return ;
 	del[0] = NULL;
 	fath = fork();
-	(fath > 0) ? wait(NULL) : 0;
-	if (fath == 0 && cmd[i])
+	if (fath == 0 && cmd + i)
 	{
 		(path != NULL) ? check_bin(del, cmd + i, path->value) : 0;
 		execve(cmd[i], cmd + i, del);
 		error("env", cmd[i], 3);
 		exit(0);
 	}
+	if (fath > 0)
+	   wait(&fath);
 	ft_tabdel(del);
 }
 
@@ -43,7 +44,7 @@ void	n_env(t_line *env, char **cmd)
 	i = 1;
 	p = ft_getopt(cmd, &i);
 	opt = ft_checkopt(p, "iu", 2);
-	if (!p || opt == 0)
+	if (!p && opt == 0)
 		p_line(env, 0, "");
 	else if (opt == 0)
 	{
