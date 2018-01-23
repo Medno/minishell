@@ -73,3 +73,22 @@ char	*ft_onejoinf(char *news, char *old)
 	}
 	return (NULL);
 }
+
+void	ft_put_in_str(char **str, char c)
+{
+	char	*tmp;
+
+	tmp = NULL;
+	if (!*str)
+	{
+		*str = ft_strnew(1);
+		**str = c;
+	}
+	else
+	{
+		tmp = ft_strnew(1);
+		tmp[0] = c;
+		*str = ft_strjoinfree(*str, tmp);
+	}
+	ft_strdel(&tmp);
+}

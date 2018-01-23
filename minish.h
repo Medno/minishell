@@ -32,6 +32,8 @@ void			n_env(t_line *env, char **cmd);
 
 int				p_cd(t_line **env, char **cmd);
 
+unsigned char	p_exit(char **cmd);
+
 t_line			*get_smtg(t_line *env, char *str);
 void			check_bin(char **env, char **cmd, char *path);
 
@@ -47,5 +49,9 @@ void			del_line(t_line **first);
 
 int				error(char *built, char *cmd, int code);
 int				usage(char *name, char *opt, char err, int e);
+
+void			entry_message(char **av, char **env);
+void			prompt(int sig);
+void			p_prompt(void);
 
 #endif

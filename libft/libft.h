@@ -152,6 +152,7 @@ void			ft_puttab(char **tab);
 void			ft_putcolor(char *str, char *color);
 void			ft_putformat(char *str, char *color, char *background);
 void			ft_putnstr(char *str, size_t start, size_t end);
+void			ft_put_in_str(char **str, char c);
 void			ft_strclr(char *s);
 void			ft_strdel(char **as);
 void			ft_striter(char *s, void (*f)(char *));

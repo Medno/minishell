@@ -14,6 +14,7 @@
 
 int	error(char *built, char *cmd, int code)
 {
+	ft_putstr("bash: ");
 	ft_putstr(built);
 	(code == 1) ? ft_putstr(": string not in pwd: ") : 0;
 	(code == 2) ? ft_putstr(": permission denied: ") : 0;
@@ -21,9 +22,12 @@ int	error(char *built, char *cmd, int code)
 	(code == 4) ? ft_putstr(": not a directory: ") : 0;
 	(code == 5) ? ft_putstr(": command not found: ") : 0;
 	(code == 6) ? ft_putstr(": not a directory: ") : 0;
-	(code == 7) ? ft_putstr(": ") : 0;
-	(code == 7) ? ft_putstr(cmd) : ft_putendl(cmd);
+	(code == 7 || code == 9) ? ft_putstr(": ") : 0;
+	if (code != 8)
+		(code == 7 || code == 9) ? ft_putstr(cmd) : ft_putendl(cmd);
 	(code == 7) ? ft_putendl(" not set") : 0;
+	(code == 8) ? ft_putendl(": too many arguments") : 0;
+	(code == 9) ? ft_putendl(": numeric argument required") : 0;
 	return (0);
 }
 

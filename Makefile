@@ -25,7 +25,9 @@ SRC = error.c \
 	  echo_new.c \
 	  env_cmd.c \
 	  env.c \
+	  exit.c \
 	  main.c \
+	  message.c \
 	  cd_new.c \
 	  line.c \
 	  line_2.c

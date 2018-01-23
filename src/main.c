@@ -14,6 +14,31 @@
 
 pid_t	g_fath = -1;
 
+void	kill_child(int sig)
+{
+	sig = 0;
+	(void)sig;
+	if (g_fath > 0)
+		kill(g_fath, SIGTERM);
+	g_fath = -1;
+	ft_putchar('\n');
+	signal(SIGINT, (void (*)(int))kill_child);
+}
+
+t_line	*get_smtg(t_line *env, char *str)
+{
+	t_line	*path;
+
+	path = env;
+	while (path)
+	{
+		if (ft_strcmp(path->var, str) == 0)
+			return (path);
+		path = path->next;
+	}
+	return (NULL);
+}
+
 uint8_t	is_built(char *str)
 {
 	if (ft_strcmp(str, "echo") == 0)
@@ -38,20 +63,6 @@ void	exec_built(t_line **env, char **ncmd)
 	(ft_strcmp(ncmd[0], "env") == 0) ? n_env(*env, ncmd) : 0;
 }
 
-t_line	*get_smtg(t_line *env, char *str)
-{
-	t_line	*path;
-
-	path = env;
-	while (path)
-	{
-		if (ft_strcmp(path->var, str) == 0)
-			return (path);
-		path = path->next;
-	}
-	return (NULL);
-}
-
 void	check_bin(char **tenv, char **ncmd, char *path)
 {
 	char	*gap;
@@ -67,15 +78,29 @@ void	check_bin(char **tenv, char **ncmd, char *path)
 	}
 }
 
-void	kill_child(int sig)
+void	replace_ls(t_line *env, char **cmd)
 {
-	sig = 0;
-	(void)sig;
-	if (g_fath > 0)
-		kill(g_fath, SIGTERM);
-	g_fath = -1;
-	ft_putchar('\n');
-	signal(SIGINT, (void (*)(int))kill_child);
+	t_line	*pwd;
+	t_line	*oldpwd;
+	int		i;
+
+	i = 0;
+	pwd = get_smtg(env, "PWD");
+	oldpwd = get_smtg(env, "OLDPWD");
+	while (cmd[i])
+	{
+		if (ft_strequ(cmd[i], "~+") && pwd)
+		{
+			ft_strdel(&cmd[i]);
+			cmd[i] = ft_strdup(pwd->value);
+		}
+		if (ft_strequ(cmd[i], "~-") && oldpwd)
+		{
+			ft_strdel(&cmd[i]);
+			cmd[i] = ft_strdup(oldpwd->value);
+		}
+		i++;
+	}
 }
 
 void	exec_bin(t_line **env, char **ncmd)
@@ -83,6 +108,7 @@ void	exec_bin(t_line **env, char **ncmd)
 	char	**tenv;
 	t_line	*path;
 
+	(ft_strequ(ncmd[0], "ls")) ? replace_ls(*env, ncmd): 0;
 	path = get_smtg(*env, "PATH");
 	g_fath = fork();
 	tenv = line_to_tab(env);
@@ -101,20 +127,6 @@ void	exec_bin(t_line **env, char **ncmd)
 	(tenv != NULL) ? ft_tabdel(tenv) : 0;
 }
 
-unsigned char	p_exit(char **cmd)
-{
-	int	i;
-
-	i = 0;
-	while (cmd[i] != NULL)
-		i++;
-	if (i == 3)
-		return ((unsigned char)1);
-	if (i == 2)
-		return ((unsigned char)ft_atoi(cmd[1]));
-	return (0);
-}
-
 uint8_t	execute_cmd(t_line **env, char *cmd)
 {
 	char			**ncmd;
@@ -123,7 +135,7 @@ uint8_t	execute_cmd(t_line **env, char *cmd)
 
 	if (!*cmd)
 		return (1);
-	res = 0;
+	res = 254;
 	while (ft_iswsp(*cmd))
 		cmd++;
 	if (!*cmd || ((ncmd = ft_splitwsp(cmd)) == NULL))
@@ -136,50 +148,10 @@ uint8_t	execute_cmd(t_line **env, char *cmd)
 	else
 		res = p_exit(ncmd);
 	ft_tabdel(ncmd);
-	return ((res == 0) ? 0 : -1);
+	return ((res != 254) ? res : 254);
 }
 
-void	p_prompt(void)
-{
-	char	*tmp;
-
-	tmp = NULL;
-	tmp = getcwd(tmp, 0);
-	ft_putcolor(tmp, LIGHT_BLUE);
-	ft_putstr(PROMPT);
-	ft_strdel(&tmp);
-}
-
-void	prompt(int sig)
-{
-	if (sig == SIGINT)
-	{
-		ft_putchar('\n');
-		p_prompt();
-		signal(SIGINT, (void (*)(int))prompt);
-	}
-}
-
-void	putinstr(char **str, char c)
-{
-	char	*tmp;
-
-	tmp = NULL;
-	if (!*str)
-	{
-		*str = ft_strnew(1);
-		**str = c;
-	}
-	else
-	{
-		tmp = ft_strnew(1);
-		tmp[0] = c;
-		*str = ft_strjoinfree(*str, tmp);
-	}
-	ft_strdel(&tmp);
-}
-
-int	exec(t_line **env, uint8_t again)
+int	exec(t_line **env, unsigned char again)
 {
 	char	car;
 	char	*cmd;
@@ -187,12 +159,12 @@ int	exec(t_line **env, uint8_t again)
 	char	**semicolon;
 
 	i = 0;
-	again = 0;
+	again = 254;
 	cmd = NULL;
 	p_prompt();
 	signal(SIGINT, (void (*)(int))prompt);
 	while ((read(0, &car, 1)) > 0 && car != '\n')
-		putinstr(&cmd, car);
+		ft_put_in_str(&cmd, car);
 	semicolon = ft_strsplit(cmd, ';');
 	while (semicolon && semicolon[i])
 	{
@@ -204,30 +176,17 @@ int	exec(t_line **env, uint8_t again)
 	return (again);
 }
 
-void	entry_message(char **av, char **env)
-{
-	pid_t	father;
-
-	father = fork();
-	if (father)
-		wait(0);
-	else
-		execve("/usr/bin/clear", av, env);
-	ft_putendl("Welcome to the pchadeni's minishell !");
-}
-
 int	main(int ac, char **av, char **env)
 {
-	int		again;
-	t_line	*nenv;
+	unsigned char	again;
+	t_line			*nenv;
 
 	(void)ac;
 	entry_message(av, env);
-	again = -1;
+	again = 254;
 	nenv = fill_line(env);
-	while (again == -1)
+	while (again == 254)
 		again = exec(&nenv, again);
-	ft_putcolor("exit\n", LIGHT_RED);
 	del_line(&nenv);
 	return (again);
 }
