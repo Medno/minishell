@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/09 10:06:22 by pchadeni          #+#    #+#             */
-/*   Updated: 2017/11/10 16:01:18 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/23 14:24:44 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static void		tmp(char **tab, char const *s, char c, size_t *i_tab)
 	len = 0;
 	while (s[i])
 	{
-		if (s[i] != c && s[i + 1])
+		if (s[i] != c)
 		{
 			len = 0;
 			while (s[i + len] != c && s[i + len])

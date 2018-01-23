@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 11:10:25 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/18 17:06:25 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/23 11:05:38 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,7 @@ void			ft_putnbr_fd(int n, int fd);
 void			ft_putstr(char const *s);
 void			ft_putstr_fd(char const *s, int fd);
 void			ft_putsgap(char *str, char n, int i);
+void			ft_puttab(char **tab);
 void			ft_putcolor(char *str, char *color);
 void			ft_putformat(char *str, char *color, char *background);
 void			ft_putnstr(char *str, size_t start, size_t end);

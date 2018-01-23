@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 18:31:11 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/22 18:03:59 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/23 17:56:38 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,9 +113,10 @@ char	*concat_cdpath(char *cmd, char *path)
 	i = 1;
 	while ((gap = ft_strgap(path, ':', i)))
 	{
+		if (ft_lastchar(gap) != '/')
 		gap = ft_strjoinfree(gap, "/");
 		gap = ft_strjoinfree(gap, cmd);
-		if (check_path(gap, 0))
+		if (!check_path(gap, 0))
 			return (gap);
 		ft_strdel(&gap);
 		i++;
@@ -216,18 +217,31 @@ int		step_8(char *tmp, t_line *pwd, t_line *oldpwd)
 		pwd->value = ft_strdup(tmp);
 		chdir(tmp);
 	}
-	ft_putendl(tmp);
 	ft_strdel(&tmp);
 	return (check);
 }
-
+/*
+void	del_dot(t_list **first, t_list **list, t_list **prev, uint8_t dot)
+{
+	dot = 0;
+	if (*list == *first)
+		*first = (*list)->next->next;
+	else if (dot == 1)
+	{
+		(*prev)->next = ((*list)->next) ? (*list)->next->next : NULL;
+		ft_lstdelone(&(*list)->next, ft_lstclean);
+	}
+	else
+		(*prev)->next = ((*list)) ? (*list)->next : NULL;
+	ft_lstdelone(list, ft_lstclean);
+}
+*/
 int		compress_path(t_list **first, t_list **list, t_list **prev, char **tmp)
 {
 	int	check;
 
-	while (ft_strequ((*list)->content, "."))
-		*list = (*list)->next;
-	if ((check = checkpath(*list, *tmp)) == 2)
+	check = 0;
+	if (*list && (check = checkpath(*list, *tmp)) == 2)
 	{
 		if (*list == *first)
 			*first = (*list)->next->next;
@@ -240,16 +254,46 @@ int		compress_path(t_list **first, t_list **list, t_list **prev, char **tmp)
 		*list = *first;
 		*prev = *list;
 	}
-	else if (check == 1)
+	else if (*list && check == 1)
 	{
 		*tmp = ft_strjoinfree(*tmp, (char *)(*list)->content);
 		*tmp = ft_strjoinfree(*tmp, "/");
 	}
 	*prev = *list;
-	*list = (check != 2) ? (*list)->next : *list;
+	*list = ((*list) && check != 2) ? (*list)->next : *list;
 	return (check);
 }
+/*
+void	delete_dot(t_list **first)
+{
+	t_list	*lst;
+	t_list	*prev;
 
+	lst = *first;
+	prev = lst;
+	while (lst)
+	{
+		if (lst == *first && ft_strequ(lst->content, "."))
+		{
+			*first = lst->next;
+			ft_lstdelone(&lst, ft_lstclean);
+			lst = *first;
+			prev = lst;
+		}
+		else if (ft_strequ(lst->content, "."))
+		{
+			prev->next = (lst) ? lst->next : NULL;
+			ft_lstdelone(&lst, ft_lstclean);
+			lst = prev;
+		}
+		else
+		{
+			prev = lst;
+			lst = lst->next;
+		}
+	}
+}
+*/
 int	final_curpath(char *str, t_line *pwd, t_line *oldpwd)
 {
 	t_list	*list;
@@ -267,8 +311,9 @@ int	final_curpath(char *str, t_line *pwd, t_line *oldpwd)
 		check = compress_path(&first, &list, &prev, &tmp);
 	(first) ? ft_lstdel(&first, ft_lstclean) : 0;
 	if (check == 0 || check == 3)
-		return (check);
-	check = step_8(tmp, pwd, oldpwd);
+		ft_strdel(&tmp);
+	else
+		check = step_8(tmp, pwd, oldpwd);
 	return (check);
 }
 
@@ -292,6 +337,16 @@ int		opt_l(char *curpath, t_line *pwd, t_line *oldpwd)
 	return (res);
 }
 
+uint8_t	isdot(char *str)
+{
+	if (str)
+	{
+		if (str[0] && str[0] == '.')
+			return (1);
+	}
+	return (0);
+}
+
 int		check_fold(char *cmd, t_line **env, char *p)
 {
 	char	*curpath;
@@ -299,14 +354,14 @@ int		check_fold(char *cmd, t_line **env, char *p)
 	t_line	*pwd;
 
 	pwd = get_pwd(env, "PWD");
-	if (cmd[0] != '/' && !ft_isdot(cmd))
+	if (cmd[0] != '/' && !isdot(cmd))
 	{
 		if ((cdpath = get_smtg(*env, "CDPATH")))
 			curpath = concat_cdpath(cmd, cdpath->value);
 		else
 			curpath = ft_strdup(cmd);
 	}
-	else if (ft_isdot(cmd) || cmd[0] == '/')
+	else if (isdot(cmd) || cmd[0] == '/')
 		curpath = ft_strdup(cmd);
 	if (p && ft_strchr(p, 'P') && check_path(curpath, 0))
 	{
@@ -342,5 +397,5 @@ int		p_cd(t_line **env, char **cmd)
 	(err && err != 7) ? error("cd", cmd[i], err) : 0;
 	ft_strdel(&path);
 	ft_strdel(&p);
-	return (1);
+	return (err);
 }

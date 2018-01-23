@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 14:58:40 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/22 18:19:30 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/23 18:12:18 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,15 +101,29 @@ void	exec_bin(t_line **env, char **ncmd)
 	(tenv != NULL) ? ft_tabdel(tenv) : 0;
 }
 
+unsigned char	p_exit(char **cmd)
+{
+	int	i;
+
+	i = 0;
+	while (cmd[i] != NULL)
+		i++;
+	if (i == 3)
+		return ((unsigned char)1);
+	if (i == 2)
+		return ((unsigned char)ft_atoi(cmd[1]));
+	return (0);
+}
+
 uint8_t	execute_cmd(t_line **env, char *cmd)
 {
-	char	**ncmd;
-	uint8_t	res;
-	uint8_t	built;
+	char			**ncmd;
+	unsigned char	res;
+	uint8_t			built;
 
 	if (!*cmd)
 		return (1);
-	res = 1;
+	res = 0;
 	while (ft_iswsp(*cmd))
 		cmd++;
 	if (!*cmd || ((ncmd = ft_splitwsp(cmd)) == NULL))
@@ -120,9 +134,9 @@ uint8_t	execute_cmd(t_line **env, char *cmd)
 		(built > 0) ? exec_built(env, ncmd) : exec_bin(env, ncmd);
 	}
 	else
-		res = 0;
+		res = p_exit(ncmd);
 	ft_tabdel(ncmd);
-	return (res);
+	return ((res == 0) ? 0 : -1);
 }
 
 void	p_prompt(void)
@@ -173,7 +187,7 @@ int	exec(t_line **env, uint8_t again)
 	char	**semicolon;
 
 	i = 0;
-	again = 1;
+	again = 0;
 	cmd = NULL;
 	p_prompt();
 	signal(SIGINT, (void (*)(int))prompt);
@@ -190,18 +204,30 @@ int	exec(t_line **env, uint8_t again)
 	return (again);
 }
 
+void	entry_message(char **av, char **env)
+{
+	pid_t	father;
+
+	father = fork();
+	if (father)
+		wait(0);
+	else
+		execve("/usr/bin/clear", av, env);
+	ft_putendl("Welcome to the pchadeni's minishell !");
+}
+
 int	main(int ac, char **av, char **env)
 {
-	uint8_t	again;
+	int		again;
 	t_line	*nenv;
 
 	(void)ac;
-	(void)av;
-	again = 1;
+	entry_message(av, env);
+	again = -1;
 	nenv = fill_line(env);
-	while (again)
+	while (again == -1)
 		again = exec(&nenv, again);
 	ft_putcolor("exit\n", LIGHT_RED);
 	del_line(&nenv);
-	return (0);
+	return (again);
 }

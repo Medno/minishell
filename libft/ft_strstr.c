@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 17:44:05 by pchadeni          #+#    #+#             */
-/*   Updated: 2017/11/08 10:31:30 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/23 13:06:36 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,32 @@ char	*ft_strstr(const char *haystack, const char *needle)
 					return (&tmp_hay[i]);
 				j++;
 			}
+		i++;
+	}
+	return (NULL);
+}
+
+char	*ft_strnstr(const char *haystack, const char *needle, size_t n)
+{
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	if (needle[0] == '\0')
+		return ((char *)haystack);
+	n++;
+	while (haystack[i] && n)
+	{
+		j = 0;
+		if (haystack[i] == needle[j])
+			while ((haystack[i + j] == needle[j] || needle[j] == '\0') && n)
+			{
+				if (needle[j] == '\0')
+					return ((char *)&haystack[i]);
+				j++;
+				n--;
+			}
+		n = n + j - 1;
 		i++;
 	}
 	return (NULL);

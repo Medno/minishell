@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_tabdup.c                                        :+:      :+:    :+:   */
+/*   ft_tab.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/09 16:36:57 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/09 17:14:26 by pchadeni         ###   ########.fr       */
+/*   Created: 2018/01/23 13:21:25 by pchadeni          #+#    #+#             */
+/*   Updated: 2018/01/23 13:21:26 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,33 @@ char	**ft_tabdup(char **tab)
 		size--;
 	}
 	return (tmp);
+}
+
+void	ft_tabdel(char **tab)
+{
+	int	i;
+
+	i = 0;
+	if (tab)
+	{
+		while (tab[i])
+		{
+			ft_strdel(&(tab[i]));
+			i++;
+		}
+		free(tab);
+		tab = NULL;
+	}
+}
+
+void	ft_puttab(char **tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab[i])
+	{
+		ft_putendl(tab[i]);
+		i++;
+	}
 }

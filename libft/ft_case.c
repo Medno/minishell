@@ -1,39 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strnstr.c                                       :+:      :+:    :+:   */
+/*   ft_case.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 18:09:19 by pchadeni          #+#    #+#             */
-/*   Updated: 2017/11/10 09:58:40 by pchadeni         ###   ########.fr       */
+/*   Created: 2018/01/23 11:51:48 by pchadeni          #+#    #+#             */
+/*   Updated: 2018/01/23 13:33:18 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strnstr(const char *haystack, const char *needle, size_t n)
+char	*ft_stolower(char *str)
 {
-	size_t	i;
-	size_t	j;
+	int		i;
+	char	*tmp;
 
-	i = 0;
-	if (needle[0] == '\0')
-		return ((char *)haystack);
-	n++;
-	while (haystack[i] && n)
+	i = ft_strlen(str);
+	tmp = ft_strnew(i);
+	while (i >= 0)
 	{
-		j = 0;
-		if (haystack[i] == needle[j])
-			while ((haystack[i + j] == needle[j] || needle[j] == '\0') && n)
-			{
-				if (needle[j] == '\0')
-					return ((char *)&haystack[i]);
-				j++;
-				n--;
-			}
-		n = n + j - 1;
-		i++;
+		tmp[i] = ft_tolower(str[i]);
+		i--;
 	}
-	return (NULL);
+	return (tmp);
+}
+
+int		ft_tolower(int c)
+{
+	if (c >= 65 && c <= 90)
+		return (c + 32);
+	return (c);
+}
+
+int		ft_toupper(int c)
+{
+	if (c >= 97 && c <= 122)
+		return (c - 32);
+	return (c);
 }

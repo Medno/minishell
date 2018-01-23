@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstnew.c                                        :+:      :+:    :+:   */
+/*   ft_lstalloc.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/09 16:50:22 by pchadeni          #+#    #+#             */
-/*   Updated: 2017/11/10 21:13:07 by pchadeni         ###   ########.fr       */
+/*   Created: 2018/01/23 11:18:41 by pchadeni          #+#    #+#             */
+/*   Updated: 2018/01/23 11:18:42 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,4 +33,46 @@ t_list	*ft_lstnew(void const *content, size_t content_size)
 		tmp->next = NULL;
 	}
 	return (tmp);
+}
+
+void	ft_lstadd(t_list **alst, t_list *new)
+{
+	new->next = (*alst);
+	(*alst) = new;
+}
+
+void	ft_lstaddlast(t_list **list, t_list *add)
+{
+	t_list	*begin;
+
+	if (!(*list))
+		(*list) = add;
+	else
+	{
+		begin = *list;
+		while (begin->next)
+			begin = begin->next;
+		begin->next = add;
+	}
+}
+
+void	ft_lstdelone(t_list **alst, void (*del)(void *, size_t))
+{
+	if (*alst)
+	{
+		(*del)((*alst)->content, (*alst)->content_size);
+		free(*alst);
+		*alst = NULL;
+	}
+}
+
+void	ft_lstdel(t_list **alst, void (*del)(void *, size_t))
+{
+	if ((*alst)->next == NULL)
+		ft_lstdelone(alst, del);
+	else
+	{
+		ft_lstdel(&(*alst)->next, del);
+		ft_lstdelone(alst, del);
+	}
 }
