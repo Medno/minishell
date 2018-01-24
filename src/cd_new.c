@@ -6,19 +6,20 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 18:31:11 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/23 17:56:38 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/24 18:12:01 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minish.h"
 
-t_line	*get_pwd(t_line **env, char *str)
+t_line	*get_pwd(t_line *env, char *str)
 {
 	t_line *pwd;
 
-	if (*env)
+	pwd = NULL;
+	if (env)
 	{
-		pwd = *env;
+		pwd = env;
 		while (pwd && pwd->next)
 		{
 			if (ft_strequ(pwd->var, str))
@@ -26,10 +27,7 @@ t_line	*get_pwd(t_line **env, char *str)
 			pwd = pwd->next;
 		}
 	}
-	pwd = init_line();
-	pwd->var = ft_strdup(str);
-	pwd->value = getcwd(pwd->value, 0);
-	line_pushback(env, pwd);
+	pwd = init_line(env, ft_strdup(str), getcwd(pwd->value, 0));
 	return (pwd);
 }
 
@@ -54,13 +52,13 @@ char	*copy_home(t_line *env, char *path)
 	return (path);
 }
 
-uint8_t	go_oldpwd(t_line **env)
+uint8_t	go_oldpwd(t_line *env)
 {
 	t_line	*pwd;
 	t_line	*oldpwd;
 	char	*tmp;
 
-	if ((oldpwd = get_smtg(*env, "OLDPWD")))
+	if ((oldpwd = get_smtg(env, "OLDPWD")))
 	{
 		pwd = get_pwd(env, "PWD");
 		tmp = pwd->value;
@@ -353,7 +351,7 @@ int		check_fold(char *cmd, t_line **env, char *p)
 	t_line	*cdpath;
 	t_line	*pwd;
 
-	pwd = get_pwd(env, "PWD");
+	pwd = get_pwd(*env, "PWD");
 	if (cmd[0] != '/' && !isdot(cmd))
 	{
 		if ((cdpath = get_smtg(*env, "CDPATH")))
@@ -371,7 +369,7 @@ int		check_fold(char *cmd, t_line **env, char *p)
 		ft_strdel(&curpath);
 	}
 	else if (!p || (p && ft_strchr(p, 'L')))
-		return (opt_l(curpath, pwd, get_pwd(env, "OLDPWD")));
+		return (opt_l(curpath, pwd, get_pwd(*env, "OLDPWD")));
 	return (0);
 }
 
@@ -388,7 +386,7 @@ int		p_cd(t_line **env, char **cmd)
 	err = (cmd[i] && cmd[i + 1]) ? 1 : 0;
 	path = (cmd[i]) ? ft_strdup(cmd[i]) : NULL;
 	if (path && ft_strequ(path, "-"))
-		err = go_oldpwd(env);
+		err = go_oldpwd(*env);
 	else
 	{
 		path = ((!path || path[0] == '~')) ? copy_home(*env, path) : path;

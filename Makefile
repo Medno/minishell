@@ -6,7 +6,7 @@
 #    By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/08 14:57:58 by pchadeni          #+#    #+#              #
-#    Updated: 2018/01/15 17:18:52 by pchadeni         ###   ########.fr        #
+#    Updated: 2018/01/24 11:26:38 by pchadeni         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,16 +21,19 @@ NAME = minishell
 
 #------All sources------#
 
-SRC = error.c \
+SRC = cd_new.c \
+	  error.c \
 	  echo_new.c \
 	  env_cmd.c \
 	  env.c \
+	  exec.c \
 	  exit.c \
 	  main.c \
 	  message.c \
-	  cd_new.c \
+	  opt.c \
 	  line.c \
-	  line_2.c
+	  line_2.c \
+	  signal.c
 
 #------Library------#
 

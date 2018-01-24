@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 09:00:26 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/15 17:06:34 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/24 18:11:49 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,8 @@ t_line	*fill_line(char **env)
 	first = NULL;
 	while (env[i] != NULL)
 	{
-		add = init_line();
-		add->var = ft_strfchr(env[i], '=');
-		add->value = ft_strdup(ft_strrchr(env[i], '=') + 1);
-		line_pushback(&first, add);
+		add = init_line(*env, ft_strfchr(env[i], '='),
+				ft_strdup(ft_strrchr(env[i], '=') + 1));
 		i++;
 	}
 	return (first);

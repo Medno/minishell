@@ -6,21 +6,22 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/09 10:58:26 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/15 17:18:30 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/24 18:12:00 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minish.h"
 
-t_line	*init_line(void)
+t_line	*init_line(t_line *env, char *variable, char *value)
 {
 	t_line	*tmp;
 
 	if (!(tmp = (t_line *)malloc(sizeof(t_line))))
 		return (NULL);
-	tmp->var = NULL;
-	tmp->value = NULL;
+	tmp->var = variable;
+	tmp->value = value;
 	tmp->next = NULL;
+	line_pushback(&env, tmp);
 	return (tmp);
 }
 

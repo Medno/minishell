@@ -1,40 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   opt.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/24 11:12:51 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/24 11:12:52 by pchadeni         ###   ########.fr       */
+/*   Created: 2018/01/24 11:24:38 by pchadeni          #+#    #+#             */
+/*   Updated: 2018/01/24 11:25:28 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minish.h"
 
-unsigned char	p_exit(char **cmd)
+void	replace_ls(t_line *env, char **cmd)
 {
-	int	i;
+	t_line	*pwd;
+	t_line	*oldpwd;
+	int		i;
 
 	i = 0;
-	while (cmd && cmd[i] != NULL)
-		i++;
-	if (i == 3)
+	pwd = get_smtg(env, "PWD");
+	oldpwd = get_smtg(env, "OLDPWD");
+	while (cmd[i])
 	{
-		error("exit", cmd[i], 8);
-		return ((unsigned char)254);
-	}
-	ft_putcolor("exit 👋\n", LIGHT_RED);
-	if (i == 2)
-	{
-		i = 0;
-		while (cmd[1][i])
+		if (ft_strequ(cmd[i], "~+") && pwd)
 		{
-			if (!ft_isdigit(cmd[1][i]))
-				return (error("exit", cmd[1], 9));
-			i++;
+			ft_strdel(&cmd[i]);
+			cmd[i] = ft_strdup(pwd->value);
 		}
-		return ((unsigned char)ft_atoi(cmd[1]));
+		if (ft_strequ(cmd[i], "~-") && oldpwd)
+		{
+			ft_strdel(&cmd[i]);
+			cmd[i] = ft_strdup(oldpwd->value);
+		}
+		i++;
 	}
-	return (0);
 }
