@@ -6,22 +6,34 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/09 10:58:26 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/24 18:12:00 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/25 16:48:15 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minish.h"
 
-t_line	*init_line(t_line *env, char *variable, char *value)
+//t_line	*init_line(t_line **env, char *variable, char *value)
+t_line	*init_line(t_line **env, char *cmd)
 {
 	t_line	*tmp;
+	char	*variable;
+	char	*value;
 
+	variable = ft_strfchr(cmd, '=');
+	value = ft_strdup(ft_strrchr(cmd, '=') + 1);
+	if ((tmp = get_smtg(*env, variable)))
+	{
+		ft_strdel(&variable);
+		ft_strdel(&tmp->value);
+		tmp->value = (value) ? ft_strdup(value) : NULL;
+		return (tmp);
+	}
 	if (!(tmp = (t_line *)malloc(sizeof(t_line))))
 		return (NULL);
-	tmp->var = variable;
-	tmp->value = value;
+	tmp->var = (variable) ? variable : NULL;
+	tmp->value = (value) ? value : NULL;
 	tmp->next = NULL;
-	line_pushback(&env, tmp);
+	line_pushback(env, tmp);
 	return (tmp);
 }
 
@@ -81,19 +93,16 @@ char	**line_to_tab(t_line **first)
 	return (res);
 }
 
-void	p_line(t_line *line, uint8_t i, char *del)
+void	p_line(t_line *line)
 {
 	t_line	*tmp;
 
 	tmp = line;
 	while (tmp)
 	{
-		if (i == 0 || (i == 1 && !ft_strequ(del, tmp->var)))
-		{
-			ft_putstr(tmp->var);
-			ft_putchar('=');
-			ft_putendl(tmp->value);
-		}
+		ft_putstr(tmp->var);
+		ft_putchar('=');
+		ft_putendl(tmp->value);
 		tmp = tmp->next;
 	}
 }

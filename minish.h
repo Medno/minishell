@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 15:06:46 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/24 16:17:09 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/25 16:40:50 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ void			ft_echo(t_line *env, char **cmd);
 void			replace_ls(t_line *env, char **cmd);
 t_line			*get_smtg(t_line *env, char *str);
 
-t_line			*init_line(t_line *env, char *variable, char *value);
+t_line			*init_line(t_line **env, char *cmd);
 t_line			*fill_line(char **env);
 t_line			*dup_line(t_line *env);
 void			line_pushback(t_line **first, t_line *add);
 char			**line_to_tab(t_line **first);
-void			p_line(t_line *line, uint8_t i, char *del);
+void			p_line(t_line *line);
 int				clean_line(t_line **prev, t_line *tmp);
 void			del_line(t_line **first);
 

@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/15 13:54:05 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/24 18:11:50 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/25 17:11:52 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,12 @@ void	n_env(t_line *env, char **cmd)
 	int		i;
 	int		opt;
 	t_line	*cpy_env;
-	t_line	*add;
 
 	i = 1;
 	p = ft_getopt(cmd, &i);
 	opt = ft_checkopt(p, "iu", 2);
-	cpy_env = (p && ft_strchr(p, 'i')) ? init_line(NULL, NULL, NULL) : dup_line(env);
-	if (p && ft_strchr(p, 'p'))
+	cpy_env = (p && ft_strchr(p, 'i')) ? init_line(&cpy_env, NULL) : dup_line(env);
+	if (p && ft_strchr(p, 'i'))
 	{
 		while (cmd[i] && ft_strchr(cmd[i], '='))
 		{
@@ -57,15 +56,13 @@ void	n_env(t_line *env, char **cmd)
 	}
 	else if (p && ft_strchr(p, 'u') && cmd[i])
 	{
-		uns_env(cpy_env, &cmd[i]);
+		uns_env(&cpy_env, &cmd[i]);
 		i++;
 	}
 	if (cmd[i])
-	{
 		execute_cmd(&cpy_env, cmd[i]);
-	}
 	else if (opt == 0)
-		p_line(cpy_env, 0, "");
+		p_line(cpy_env);
 	else
 		usage("env", "iu", opt, 1);
 	del_line(&cpy_env);
