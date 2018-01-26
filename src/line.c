@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/09 10:58:26 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/25 16:48:15 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/26 11:26:30 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,21 +19,29 @@ t_line	*init_line(t_line **env, char *cmd)
 	char	*variable;
 	char	*value;
 
-	variable = ft_strfchr(cmd, '=');
-	value = ft_strdup(ft_strrchr(cmd, '=') + 1);
-	if ((tmp = get_smtg(*env, variable)))
+	ft_putendl("init_1");
+	variable = (cmd) ? ft_strfchr(cmd, '=') : NULL;
+	ft_putendl("init_2");
+	value = (cmd) ? ft_strdup(ft_strrchr(cmd, '=') + 1) : NULL;
+	ft_putendl("init_3");
+	if (variable && (tmp = get_smtg(*env, variable)))
 	{
 		ft_strdel(&variable);
 		ft_strdel(&tmp->value);
-		tmp->value = (value) ? ft_strdup(value) : NULL;
+		tmp->value = (value) ? value : NULL;
 		return (tmp);
 	}
+	ft_putendl("init_4");
 	if (!(tmp = (t_line *)malloc(sizeof(t_line))))
 		return (NULL);
+	ft_putendl("init_5");
 	tmp->var = (variable) ? variable : NULL;
 	tmp->value = (value) ? value : NULL;
 	tmp->next = NULL;
+	ft_putendl("init_6");
+	if (tmp->var)
 	line_pushback(env, tmp);
+	ft_putendl("init_7");
 	return (tmp);
 }
 
@@ -41,14 +49,17 @@ void	line_pushback(t_line **first, t_line *add)
 {
 	t_line	*tmp;
 
-	if (!(*first))
-		(*first) = add;
-	else
+	if (add)
 	{
-		tmp = *first;
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = add;
+		if (!(*first))
+			(*first) = add;
+		else
+		{
+			tmp = *first;
+			while (tmp->next)
+				tmp = tmp->next;
+			tmp->next = add;
+		}
 	}
 }
 
@@ -98,7 +109,7 @@ void	p_line(t_line *line)
 	t_line	*tmp;
 
 	tmp = line;
-	while (tmp)
+	while (tmp && tmp->var)
 	{
 		ft_putstr(tmp->var);
 		ft_putchar('=');

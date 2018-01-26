@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 18:31:11 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/24 18:12:01 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/26 10:15:17 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ t_line	*get_pwd(t_line *env, char *str)
 			pwd = pwd->next;
 		}
 	}
-	pwd = init_line(env, ft_strdup(str), getcwd(pwd->value, 0));
+	pwd = init_line(&env, NULL);
+	pwd->var = ft_strdup(str);
+	pwd->value = getcwd(pwd->value, 0);
 	return (pwd);
 }
 

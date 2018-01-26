@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 09:00:26 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/25 17:11:20 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/26 10:34:54 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,7 @@
 t_line	*fill_line(char **env)
 {
 	t_line	*first;
-	int		i;
 
-	i = 0;
 	first = NULL;
 	s_env(&first, env);
 		//		add = init_line(first, ft_strfchr(env[i], '='),

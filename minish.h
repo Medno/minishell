@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 15:06:46 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/25 16:40:50 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/26 10:41:38 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void			p_prompt(void);
 
 void			kill_child(int sig);
 void			ret_fath(pid_t fath);
+void			incr_shlvl(t_line *env);
 
 int				error(char *built, char *cmd, int code);
 int				usage(char *name, char *opt, char err, int e);

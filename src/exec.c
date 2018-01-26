@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/24 11:15:59 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/24 18:11:51 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/26 10:18:14 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void		exec_built(t_line **env, char **ncmd)
 {
 	(ft_strcmp(ncmd[0], "echo") == 0) ? ft_echo(*env, ncmd) : 0;
 	(ft_strcmp(ncmd[0], "cd") == 0) ? p_cd(env, ncmd) : 0;
-	(ft_strcmp(ncmd[0], "setenv") == 0) ? s_env(env, ncmd) : 0;
+	(ft_strcmp(ncmd[0], "setenv") == 0) ? s_env(env, ncmd + 1) : 0;
 	(ft_strcmp(ncmd[0], "unsetenv") == 0) ? uns_env(env, ncmd) : 0;
 	(ft_strcmp(ncmd[0], "env") == 0) ? n_env(*env, ncmd) : 0;
 }
