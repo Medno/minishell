@@ -6,20 +6,20 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 18:31:11 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/26 10:15:17 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/27 11:43:45 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minish.h"
 
-t_line	*get_pwd(t_line *env, char *str)
+t_line	*get_pwd(t_line **env, char *str)
 {
 	t_line *pwd;
 
 	pwd = NULL;
-	if (env)
+	if (*env)
 	{
-		pwd = env;
+		pwd = *env;
 		while (pwd && pwd->next)
 		{
 			if (ft_strequ(pwd->var, str))
@@ -27,7 +27,7 @@ t_line	*get_pwd(t_line *env, char *str)
 			pwd = pwd->next;
 		}
 	}
-	pwd = init_line(&env, NULL);
+	pwd = init_line(env, "");
 	pwd->var = ft_strdup(str);
 	pwd->value = getcwd(pwd->value, 0);
 	return (pwd);
@@ -62,7 +62,7 @@ uint8_t	go_oldpwd(t_line *env)
 
 	if ((oldpwd = get_smtg(env, "OLDPWD")))
 	{
-		pwd = get_pwd(env, "PWD");
+		pwd = get_pwd(&env, "PWD");
 		tmp = pwd->value;
 		pwd->value = oldpwd->value;
 		oldpwd->value = tmp;
@@ -322,8 +322,10 @@ int		opt_l(char *curpath, t_line *pwd, t_line *oldpwd)
 	char	*tmp;
 	int		res;
 
+ft_putendl("old_l_1");
 	if (curpath[0] != '/')
 	{
+ft_putendl("old_l_2");
 		tmp = ft_strdup(pwd->value);
 		if (ft_lastchar(pwd->value) != '/')
 			tmp = ft_strjoinfree(tmp, "/");
@@ -332,7 +334,9 @@ int		opt_l(char *curpath, t_line *pwd, t_line *oldpwd)
 	else
 		tmp = ft_strdup(curpath);
 	ft_strdel(&curpath);
+ft_putendl("old_l_3");
 	res = final_curpath(tmp, pwd, oldpwd);
+ft_putendl("old_l_4");
 	ft_strdel(&tmp);
 	return (res);
 }
@@ -353,7 +357,7 @@ int		check_fold(char *cmd, t_line **env, char *p)
 	t_line	*cdpath;
 	t_line	*pwd;
 
-	pwd = get_pwd(*env, "PWD");
+	pwd = get_pwd(env, "PWD");
 	if (cmd[0] != '/' && !isdot(cmd))
 	{
 		if ((cdpath = get_smtg(*env, "CDPATH")))
@@ -371,7 +375,10 @@ int		check_fold(char *cmd, t_line **env, char *p)
 		ft_strdel(&curpath);
 	}
 	else if (!p || (p && ft_strchr(p, 'L')))
-		return (opt_l(curpath, pwd, get_pwd(*env, "OLDPWD")));
+	{
+ft_putendl("check_f");
+		return (opt_l(curpath, pwd, get_pwd(env, "OLDPWD")));
+	}
 	return (0);
 }
 
@@ -391,8 +398,11 @@ int		p_cd(t_line **env, char **cmd)
 		err = go_oldpwd(*env);
 	else
 	{
+ft_putendl("p_cd_1");
 		path = ((!path || path[0] == '~')) ? copy_home(*env, path) : path;
+ft_putendl("p_cd_2");
 		err = (!path) ? error("cd", "HOME", 7) : check_fold(path, env, p);
+ft_putendl("p_cd_3");
 	}
 	(err && err != 7) ? error("cd", cmd[i], err) : 0;
 	ft_strdel(&path);

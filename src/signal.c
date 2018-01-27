@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/24 11:11:59 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/26 11:38:14 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/27 15:30:27 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,17 @@ void	ret_fath(pid_t fath)
 	}
 }
 
-void	incr_shlvl(t_line *env)
+void	incr_shlvl(t_line **env)
 {
 	t_line	*tmp;
 	int		i;
 
-	if ((tmp = get_smtg(env, "SHLVL")))
+	if ((tmp = get_smtg(*env, "SHLVL")))
 	{
 		i = ft_atoi(tmp->value) + 1;
 		ft_strdel(&tmp->value);
 		tmp->value = ft_itoa(i);
 	}
+	else
+		tmp = init_line(env, "SHLVL=1");
 }

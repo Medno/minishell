@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 09:00:26 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/26 10:34:54 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/27 15:33:27 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	s_env(t_line **env, char **cmd)
 	int		i;
 
 	i = 0;
-	while (cmd[i])
+	while (cmd && cmd[i])
 	{
 		tmp = init_line(env, cmd[i]);
 		i++;
@@ -56,7 +56,9 @@ int		uns_env(t_line **env, char **cmd)
 		{
 			if (ft_strcmp(tmp->var, cmd[i]) == 0)
 				clean_line(&(prev->next), tmp);
-			prev = tmp;
+			else
+				prev = tmp;
+			if (tmp)
 			tmp = tmp->next;
 		}
 		i++;

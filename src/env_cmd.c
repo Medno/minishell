@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/15 13:54:05 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/26 11:21:42 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/27 11:05:27 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,16 @@ void	n_env(t_line *env, char **cmd)
 	{
 		while (cmd[i] && ft_strchr(cmd[i], '='))
 		{
-ft_putendl("nenv_6");
-			s_env(&cpy_env, &cmd[i]);
+			init_line(&cpy_env, cmd[i]);
 			i++;
 		}
-ft_putendl("nenv_7");
 	}
 	else if (p && ft_strchr(p, 'u') && cmd[i])
 	{
 		uns_env(&cpy_env, &cmd[i]);
 		i++;
 	}
-	if (cmd[i])
+	if (cmd && cmd[i])
 		execute_cmd(&cpy_env, cmd[i]);
 	else if (opt == 0)
 		p_line(cpy_env);

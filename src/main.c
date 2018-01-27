@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 14:58:40 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/26 11:39:28 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/27 16:55:26 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	main(int ac, char **av, char **env)
 	entry_message(av, env);
 	again = 254;
 	nenv = fill_line(env);
-	incr_shlvl(nenv);
+	incr_shlvl(&nenv);
 	while (again == 254)
 		again = get_cmd(&nenv, again);
 	del_line(&nenv);

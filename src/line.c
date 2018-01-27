@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/09 10:58:26 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/26 11:26:30 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/27 10:57:07 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,10 @@ t_line	*init_line(t_line **env, char *cmd)
 	char	*variable;
 	char	*value;
 
-	ft_putendl("init_1");
-	variable = (cmd) ? ft_strfchr(cmd, '=') : NULL;
-	ft_putendl("init_2");
-	value = (cmd) ? ft_strdup(ft_strrchr(cmd, '=') + 1) : NULL;
-	ft_putendl("init_3");
+	if (!cmd)
+		return (NULL);
+	variable = (*cmd) ? ft_strfchr(cmd, '=') : NULL;
+	value = (*cmd) ? ft_strdup(ft_strrchr(cmd, '=') + 1) : NULL;
 	if (variable && (tmp = get_smtg(*env, variable)))
 	{
 		ft_strdel(&variable);
@@ -31,17 +30,12 @@ t_line	*init_line(t_line **env, char *cmd)
 		tmp->value = (value) ? value : NULL;
 		return (tmp);
 	}
-	ft_putendl("init_4");
 	if (!(tmp = (t_line *)malloc(sizeof(t_line))))
 		return (NULL);
-	ft_putendl("init_5");
 	tmp->var = (variable) ? variable : NULL;
 	tmp->value = (value) ? value : NULL;
 	tmp->next = NULL;
-	ft_putendl("init_6");
-	if (tmp->var)
 	line_pushback(env, tmp);
-	ft_putendl("init_7");
 	return (tmp);
 }
 
