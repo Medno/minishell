@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/24 11:24:38 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/24 11:25:28 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/29 15:25:27 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,16 @@ void	replace_ls(t_line *env, char **cmd)
 		}
 		i++;
 	}
+}
+
+uint8_t	can_access(void)
+{
+	char	*try;
+	int		res;
+
+	try = NULL;
+	try = getcwd(try, 0);
+	res = (access(try, F_OK) == -1) ? 0 : 1;
+	ft_strdel(&try);
+	return (res);
 }

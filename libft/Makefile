@@ -6,12 +6,21 @@
 #    By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 11:04:53 by pchadeni          #+#    #+#              #
-#    Updated: 2018/01/23 13:25:48 by pchadeni         ###   ########.fr        #
+#    Updated: 2018/01/29 17:35:45 by pchadeni         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+#------Compilation's flags------#
+
 CC = gcc
 C_FLAGS = -Wall -Wextra -Werror
+
+#------Name of the lib------#
+
+NAME = libft.a
+
+#------All sources------#
+
 FILES = ft_atoi.c \
 		ft_bzero.c \
 		ft_case.c \
@@ -56,26 +65,33 @@ FILES = ft_atoi.c \
 		get_next_line.c
 
 OBJ = $(FILES:.c=.o)
-NAME = libft.a
 
+#------Define colors------#
+
+BOLD_GREEN = \033[01;32m
+COL_GREEN = \033[0;32m
+COL_YELLOW = \033[0;33m
+END_COL = \033[0m
+
+#------Main rules------#
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
 	@ar rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
-	@echo "\033[01;32mLibft compiled ✓\033[22;0m"
+	@echo "$(BOLD_GREEN) Libft compiled ✓$(END_COL)"
 
 %.o : %.c
-	@echo "\033[0;32m [OK] \033[0m       \033[0;33m Compiling:\033[0m" $<
+	@echo -n '>'
 	@$(CC) $(C_FLAGS) -c $< -I libft.h
 
 clean:
 	@rm -Rf $(OBJ)
-	@echo "\033[01;32mLibft clean ✓\033[22;0m"
+	@echo "$(COL_GREEN)Libft clean ✓$(END_COL)"
 
 fclean: clean
 	@rm -Rf $(NAME)
-	@echo "\033[01;32mLibft fclean ✓\033[22;0m"
+	@echo "$(COL_GREEN)Libft fclean ✓$(END_COL)"
 
 re: fclean all

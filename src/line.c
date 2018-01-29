@@ -6,13 +6,12 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/09 10:58:26 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/27 10:57:07 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/29 17:15:20 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minish.h"
 
-//t_line	*init_line(t_line **env, char *variable, char *value)
 t_line	*init_line(t_line **env, char *cmd)
 {
 	t_line	*tmp;
@@ -103,7 +102,7 @@ void	p_line(t_line *line)
 	t_line	*tmp;
 
 	tmp = line;
-	while (tmp && tmp->var)
+	while (tmp)
 	{
 		ft_putstr(tmp->var);
 		ft_putchar('=');

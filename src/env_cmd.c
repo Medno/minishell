@@ -6,65 +6,47 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/15 13:54:05 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/27 11:05:27 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/29 15:00:10 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minish.h"
 
-void	env_i(t_line *env, char **cmd, int i)
+static void	exec_new_env(t_line **env, char **cmd, int opt, int i)
 {
-	pid_t	fath;
-	char	**del;
-	t_line	*path;
-
-	path = get_smtg(env, "PATH");
-	if (!(del = (char **)malloc(sizeof(char *) + 1)))
-		return ;
-	del[0] = NULL;
-	fath = fork();
-	if (fath == 0 && cmd + i)
-	{
-		(path != NULL) ? check_bin(del, cmd + i, path->value) : 0;
-		execve(cmd[i], cmd + i, del);
-		error("env", cmd[i], 3);
-		exit(0);
-	}
-	if (fath > 0)
-		wait(&fath);
-	ft_tabdel(del);
+	if (cmd && cmd[i])
+		execute_cmd(env, cmd[i]);
+	else if (opt == 0)
+		p_line(*env);
+	else
+		usage("env", "iu", opt, 1);
 }
 
-void	n_env(t_line *env, char **cmd)
+void		n_env(t_line *env, char **cmd)
 {
 	char	*p;
 	int		i;
 	int		opt;
-	t_line	*cpy_env;
+	t_line	*cpy;
 
 	i = 1;
 	p = ft_getopt(cmd, &i);
 	opt = ft_checkopt(p, "iu", 2);
-	cpy_env = (p && ft_strchr(p, 'i')) ? init_line(&cpy_env, NULL) : dup_line(env);
+	cpy = (p && ft_strchr(p, 'i')) ? init_line(&cpy, NULL) : dup_line(env);
 	if (p && ft_strchr(p, 'i'))
 	{
 		while (cmd[i] && ft_strchr(cmd[i], '='))
 		{
-			init_line(&cpy_env, cmd[i]);
+			init_line(&cpy, cmd[i]);
 			i++;
 		}
 	}
 	else if (p && ft_strchr(p, 'u') && cmd[i])
 	{
-		uns_env(&cpy_env, &cmd[i]);
+		del_one_env(&cpy, cmd[i]);
 		i++;
 	}
-	if (cmd && cmd[i])
-		execute_cmd(&cpy_env, cmd[i]);
-	else if (opt == 0)
-		p_line(cpy_env);
-	else
-		usage("env", "iu", opt, 1);
-	del_line(&cpy_env);
+	exec_new_env(&cpy, cmd, opt, i);
+	del_line(&cpy);
 	ft_strdel(&p);
 }

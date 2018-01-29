@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/24 11:15:59 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/27 11:45:56 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/29 17:04:45 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,9 @@ uint8_t			execute_cmd(t_line **env, char *cmd)
 	unsigned char	res;
 	uint8_t			built;
 
-	if (!*cmd)
-		return (1);
 	res = 254;
+	if (!*cmd || !can_access())
+		return (check_fold("/", env, NULL) + res);
 	while (ft_iswsp(*cmd))
 		cmd++;
 	g_process = cmd;
@@ -95,9 +95,7 @@ uint8_t			execute_cmd(t_line **env, char *cmd)
 	if (ncmd && ft_strcmp(ncmd[0], "exit") != 0)
 	{
 		built = is_built(ncmd[0]);
-ft_putendl("exec_1");
 		(built > 0) ? exec_built(env, ncmd) : exec_bin(env, ncmd);
-ft_putendl("exec_2");
 	}
 	else
 		res = p_exit(ncmd);
