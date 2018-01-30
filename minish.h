@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 15:06:46 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/29 17:04:35 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/30 16:19:13 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ void			clean_path(char **tmp);
 int				opt_l(char *curpath, t_line **env);
 
 uint8_t			execute_cmd(t_line **env, char *cmd);
-void			check_bin(char **env, char **cmd, char *path);
 uint8_t			can_access(void);
 
 void			entry_message(char **av, char **env);

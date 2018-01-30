@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/24 11:15:59 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/29 17:04:45 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/30 16:40:30 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void		exec_built(t_line **env, char **ncmd)
 	(ft_strcmp(ncmd[0], "env") == 0) ? n_env(*env, ncmd) : 0;
 }
 
-void			check_bin(char **tenv, char **ncmd, char *path)
+static int		check_bin(char **tenv, char **ncmd, char *path)
 {
 	char	*gap;
 	int		i;
@@ -45,10 +45,19 @@ void			check_bin(char **tenv, char **ncmd, char *path)
 	while ((gap = ft_strgap(path, ':', i)))
 	{
 		gap = ft_strjoinfree(gap, "/");
-		execve(ft_strjoin(gap, ncmd[0]), ncmd, tenv);
+		gap = ft_strjoinfree(gap, ncmd[0]);
+		if (!access(gap, F_OK) && access(gap, X_OK) == -1)
+		{
+			ft_strdel(&gap);
+			ft_putstr("bash: permission denied: ");
+			ft_putendl(g_process);
+			return (1);
+		}
+		execve(gap, ncmd, tenv);
 		ft_strdel(&gap);
 		i++;
 	}
+	return (0);
 }
 
 static void		exec_bin(t_line **env, char **ncmd)
@@ -63,9 +72,10 @@ static void		exec_bin(t_line **env, char **ncmd)
 	signal(SIGINT, (void (*)(int))kill_child);
 	if (g_fath == 0)
 	{
-		(path != NULL) ? check_bin(tenv, ncmd, path->value) : 0;
+		if (path != NULL && check_bin(tenv, ncmd, path->value))
+			exit(0);
 		execve(ncmd[0], ncmd, tenv);
-		error("zsh", ncmd[0], 5);
+		error("", ncmd[0], 5);
 		(tenv != NULL) ? ft_tabdel(tenv) : 0;
 		(ncmd != NULL) ? ft_tabdel(ncmd) : 0;
 		exit(0);
@@ -91,7 +101,7 @@ uint8_t			execute_cmd(t_line **env, char *cmd)
 		cmd++;
 	g_process = cmd;
 	if (!*cmd || ((ncmd = ft_splitwsp(cmd)) == NULL))
-		return (1);
+		return (res);
 	if (ncmd && ft_strcmp(ncmd[0], "exit") != 0)
 	{
 		built = is_built(ncmd[0]);

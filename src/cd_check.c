@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/29 10:08:36 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/29 17:11:14 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/01/30 16:48:31 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,5 @@ int		check_fold(char *cmd, t_line **env, char *p)
 	}
 	else if (!p || (p && ft_strchr(p, 'L')))
 		opt_l(curpath, env);
-//		return (opt_l(curpath, pwd, get_pwd(env, "OLDPWD")));
-
 	return (0);
 }
