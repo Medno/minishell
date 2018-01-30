@@ -33,7 +33,7 @@ void		n_env(t_line *env, char **cmd)
 	p = ft_getopt(cmd, &i);
 	opt = ft_checkopt(p, "iu", 2);
 	cpy = (p && ft_strchr(p, 'i')) ? init_line(&cpy, NULL) : dup_line(env);
-	if (p && ft_strchr(p, 'i'))
+	if ((p && ft_strchr(p, 'i')) || !p)
 	{
 		while (cmd[i] && ft_strchr(cmd[i], '='))
 		{
