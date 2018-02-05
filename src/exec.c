@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/24 11:15:59 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/30 16:40:30 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/02/05 10:39:35 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int		check_bin(char **tenv, char **ncmd, char *path)
 		if (!access(gap, F_OK) && access(gap, X_OK) == -1)
 		{
 			ft_strdel(&gap);
-			ft_putstr("bash: permission denied: ");
+			ft_putstr("minishell: permission denied: ");
 			ft_putendl(g_process);
 			return (1);
 		}

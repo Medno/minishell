@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/29 10:08:36 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/30 16:48:31 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/02/05 14:19:45 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ uint8_t	check_access_fold(t_list *list, char *tmp)
 	char	*str;
 	t_stat	sb;
 
-	if (!list)
-		return (4);
+	if (!list || ft_strequ(list->content, "."))
+		return (-2);
 	str = ft_strjoin(tmp, list->content);
 	if (lstat(str, &sb) == 0)
 	{
@@ -46,13 +46,13 @@ uint8_t	check_access_fold(t_list *list, char *tmp)
 		{
 			if (list->next && ft_strequ(list->next->content, "..") &&
 					!ft_strequ(list->content, ".."))
-				return (2);
-			return (error("cd", tmp, 2));
+				return (-1);
+			return (2);
 		}
 		if (list->next && ft_strequ(list->next->content, "..") &&
 				!ft_strequ(list->content, ".."))
-			return (2);
-		return (1);
+			return (-1);
+		return (0);
 	}
 	ft_strdel(&str);
 	return (3);
@@ -108,9 +108,9 @@ int		check_fold(char *cmd, t_line **env, char *p)
 		chdir(curpath);
 		ft_strdel(&(pwd->value));
 		pwd->value = getcwd(pwd->value, 0);
-		ft_strdel(&curpath);
 	}
 	else if (!p || (p && ft_strchr(p, 'L')))
 		opt_l(curpath, env);
+	ft_strdel(&curpath);
 	return (0);
 }

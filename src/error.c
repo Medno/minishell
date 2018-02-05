@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/10 17:04:03 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/30 15:11:39 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/02/05 11:11:56 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 int	error(char *built, char *cmd, int code)
 {
-	ft_putstr("bash: ");
+	if (!code)
+		return (code);
+	ft_putstr("minishell: ");
 	if (code != 5)
 		ft_putstr(built);
 	(code == 1) ? ft_putstr(": string not in pwd: ") : 0;
@@ -29,7 +31,7 @@ int	error(char *built, char *cmd, int code)
 	(code == 7) ? ft_putendl(" not set") : 0;
 	(code == 8) ? ft_putendl(": too many arguments") : 0;
 	(code == 9) ? ft_putendl(": numeric argument required") : 0;
-	return (0);
+	return (code);
 }
 
 int	usage(char *name, char *opt, char err, int e)
