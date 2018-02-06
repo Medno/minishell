@@ -6,7 +6,7 @@
 /*   By: pchadeni <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 17:51:13 by pchadeni          #+#    #+#             */
-/*   Updated: 2018/01/22 18:09:53 by pchadeni         ###   ########.fr       */
+/*   Updated: 2018/02/06 14:59:48 by pchadeni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,6 @@ void	ft_echo(t_line *env, char **cmd)
 		ft_putstr(BG_GRAY);
 		ft_putcolor("%", BLACK);
 	}
+	ft_strdel(&p);
 	ft_putchar('\n');
 }
