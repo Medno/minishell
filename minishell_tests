@@ -1,0 +1,81 @@
+# Test to do on minishell
+
+norminette **/*.[ch]
+nm -pu minishell
+make
+make clean
+make fclean
+make re
+
+
+# Check binaries files
+     /bin/ls
+/bin/ls -l -a -F
+ls -l -aF
+
+
+# Builtin echo
+echo oui non
+echo "oui  non"
+
+
+# env builtin
+env ls
+env
+
+# Empty env
+env -i ./minishell
+
+# Shellception
+./minishell
+env -i ./minishell
+env ./minishell
+env tutu
+
+
+# Check the builtin cd
+cd /
+cd ..
+cd ../../../../../../../../../../../tmp
+cd ~
+cd ~/Documents
+cd tutu # Fail
+cd tutu/../ # Success
+
+# If options
+cd -P /tmp
+pwd
+cd -L /tmp
+pwd
+
+# Home modified
+setenv HOME /tmp
+cd ~/pchadeni
+
+unsetenv HOME ; cd
+
+
+# Builtin exit
+exit
+exit 10
+exit 12 14
+
+# Only spaces and tab
+---
+         
+		  			
+---
+
+# Undifined behaviors
+mkdir test ; cd test ; rm -rf ../test
+
+## Bonus
+# Check zombies process
+cat
+-ctrl C-
+ls -lR /
+-ctrl C-
+ps
+
+# Semicolon separator
+ls -1 ; touch semicol ; ls -1
